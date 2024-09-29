@@ -49,7 +49,20 @@ CCamera::~CCamera()
 //============================================================================
 HRESULT CCamera::Init()
 {
+	m_Pos = { 0.0f, 0.0f, 0.0f };
+	m_PosTarget = { 0.0f, 0.0f, 0.0f };
+	m_PosV = { 0.0f, 0.0f, 0.0f };
+	m_PosTargetV = { 0.0f, 0.0f, 0.0f };
+	m_PosR = { 0.0f, 0.0f, 0.0f };
+	m_PosTargetR = { 0.0f, 0.0f, 0.0f };
+	m_Rot = { 0.0f, 0.0f, 0.0f };
+	m_RotTarget = { 0.0f, 0.0f, 0.0f };
+	m_fDistance = { 0.0f };
+	m_VecU = { 0.0f, 1.0f, 0.0f };
+	m_fAdjust = 0.0f;
 	m_fDistance = 300.0f;
+	D3DXMatrixIdentity(&m_MtxProjection);
+	D3DXMatrixIdentity(&m_MtxView);
 
 	return S_OK;
 }
@@ -77,6 +90,7 @@ void CCamera::Update()
 #ifdef _DEBUG
 	CRenderer::GetInstance()->SetDebugString("カメラ座標 : " + std::to_string(m_Pos.x) + " :  " + std::to_string(m_Pos.y) + " : " + std::to_string(m_Pos.z));
 	CRenderer::GetInstance()->SetDebugString("カメラ向き : " + std::to_string(m_Rot.x) + " :  " + std::to_string(m_Rot.y) + " : " + std::to_string(m_Rot.z));
+	CRenderer::GetInstance()->SetDebugString("カメラ間距離 : " + std::to_string(m_fDistance));
 #endif // _DEBUG
 }
 

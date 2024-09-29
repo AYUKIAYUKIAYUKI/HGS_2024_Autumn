@@ -14,6 +14,9 @@
 // デバッグ表示用
 #include "renderer.h"
 
+// カメラ取得用
+#include "manager.h"
+
 // 各シーン用
 #include "game.h"
 #include "result.h"
@@ -65,6 +68,13 @@ void CScene::Update()
 {
 	// フェードの更新
 	CFade::GetInstance()->Update();
+
+#ifdef _DEBUG
+	// 現在のシーンのクラスを表示
+	/* typeid(*this)だとバグっちゃう */
+	std::string Name{ typeid(*CManager::GetScene()).name() };
+	CRenderer::GetInstance()->SetDebugString("現在のシーンのクラス -> " + Name);
+#endif	// _DEBUG
 }
 
 //============================================================================
@@ -122,6 +132,9 @@ CScene* CScene::Create(MODE mode)
 	// 初期設定
 	/* ここで初期化をする -> シーンのInitでモードに応じた生成のために、ダングリングポインタにアクセスする -> エラー */
 	//pScene->Init();
+
+	// シーン切り替えのたびにカメラリセット
+	CManager::GetCamera()->Init();
 
 	return pScene;
 }
