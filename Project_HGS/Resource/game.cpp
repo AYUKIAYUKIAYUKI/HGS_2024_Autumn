@@ -14,6 +14,10 @@
 // インプット取得用
 #include "manager.h"
 
+/* test */
+#include "object_X.h"
+#include "texture_manager.h"
+
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
@@ -37,6 +41,12 @@ HRESULT CGame::Init()
 {
 	// 基底クラスの初期設定
 	HRESULT hr{ CScene::Init() };
+
+	/* 仮 */
+	CObject_X* pTest{ CObject_X::Create() };
+	pTest->BindModel(CModel_X_Manager::TYPE::TEST);
+	pTest->SetPos({ 0.0f, 0.0f, 0.0f });
+	pTest->SetRot({ 1.0f, 2.0f, 3.0f });
 
 	// 全てのサウンドを停止
 	//CSound::GetInstance()->Stop();

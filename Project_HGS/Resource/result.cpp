@@ -15,7 +15,7 @@
 #include "manager.h"
 
 /* test */
-#include "object_2D.h"
+#include "object_3D.h"
 #include "texture_manager.h"
 
 //============================================================================
@@ -43,10 +43,14 @@ HRESULT CResult::Init()
 	HRESULT hr{ CScene::Init() };
 
 	/* 仮 */
-	CObject_2D* pTest{ CObject_2D::Create() };
-	pTest->BindTex(CTexture_Manager::TYPE::TEST1);
-	pTest->SetPos({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f });
-	pTest->SetSize({ 30.0f, 30.0f, 0.0f });
+	for (int i{ 0 }; i < 50; i++)
+	{
+		CObject_3D* pTest{ CObject_3D::Create() };
+		pTest->BindTex(CTexture_Manager::TYPE::TEST1);
+		pTest->SetPos({ 0.0f, 0.0f, 0.0f });
+		pTest->SetRot({ 0.0f, -25.0f + 1.0f * i, 0.0f });
+		pTest->SetSize({ 15.0f, 15.0f, 0.0f });
+	}
 
 	// 全てのサウンドを停止
 	//CSound::GetInstance()->Stop();

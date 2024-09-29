@@ -16,18 +16,18 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CObject_3D::CObject_3D(int nPriority) : CObject(nPriority)
+CObject_3D::CObject_3D(int nPriority) :
+	CObject{ nPriority },
+	m_pVtxBuff{ nullptr },
+	m_pTex{ nullptr },
+	m_Pos{ 0.0f, 0.0f, 0.0f },			// 座標
+	m_Rot{ 0.0f, 0.0f, 0.0f },			// 向き
+	m_Size{ 0.0f, 0.0f, 0.0f },			// サイズ
+	m_Col{ 1.0f, 1.0f, 1.0f, 1.0f },	// 色
+	m_fLength{ 0.0f },					// 展開用対角線
+	m_fAngle{ 0.0f }					// 対角線用角度
 {
-	m_pVtxBuff = nullptr;	// 頂点バッファのポインタを初期化
-	m_pTex = nullptr;		// テクスチャのポインタを初期化
-
-	m_pos = { 0.0f, 0.0f, 0.0f };		// 位置
-	m_rot = { 0.0f, 0.0f, 0.0f };		// 向き
-	m_size = { 0.0f, 0.0f, 0.0f };		// サイズ
-	m_col = { 1.0f, 1.0f, 1.0f, 1.0f };	// 色
-	m_fLength = 0.0f;					// 展開用対角線
-	m_fAngle = 0.0f;					// 対角線用角度
-	D3DXMatrixIdentity(&m_mtxWorld);	// ワールド行列
+	D3DXMatrixIdentity(&m_MtxWorld);	// ワールド行列
 }
 
 //============================================================================
@@ -44,7 +44,7 @@ CObject_3D::~CObject_3D()
 HRESULT CObject_3D::Init()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev{ CRenderer::GetInstance()->GetDeviece() };
 
 	// 頂点バッファの生成
 	pDev->CreateVertexBuffer(sizeof(VERTEX_3D) * 4,
@@ -60,7 +60,7 @@ HRESULT CObject_3D::Init()
 	}
 
 	// 頂点情報へのポインタ
-	VERTEX_3D* pVtx;
+	VERTEX_3D* pVtx{ nullptr };
 
 	// 頂点バッファをロック
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -119,44 +119,44 @@ void CObject_3D::Update()
 	}
 
 	// 必要な数値を計算
-	m_fAngle = atan2f(m_size.x, m_size.y);
-	m_fLength = sqrtf(m_size.x * m_size.x + m_size.y * m_size.y);
+	m_fAngle = atan2f(m_Size.x, m_Size.y);
+	m_fLength = sqrtf(m_Size.x * m_Size.x + m_Size.y * m_Size.y);
 
 	// 頂点情報へのポインタ
-	VERTEX_3D* pVtx;
+	VERTEX_3D* pVtx{ nullptr };
 
 	// 頂点バッファをロック
 	m_pVtxBuff->Lock(0, 0, reinterpret_cast<void**>(&pVtx), 0);
 
 	// 位置の設定
 	pVtx[0].pos = {
-		sinf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
-		-cosf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
+		sinf(m_Rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
+		-cosf(m_Rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
 		0.0f
 	};
 
 	pVtx[1].pos = {
-		sinf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
-		-cosf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
+		sinf(m_Rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
+		-cosf(m_Rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
 		0.0f
 	};
 
 	pVtx[2].pos = {
-		sinf(m_rot.z - m_fAngle) * m_fLength,
-		-cosf(m_rot.z - m_fAngle) * m_fLength,
+		sinf(m_Rot.z - m_fAngle) * m_fLength,
+		-cosf(m_Rot.z - m_fAngle) * m_fLength,
 		0.0f
 	};
 
 	pVtx[3].pos = {
-		sinf(m_rot.z + m_fAngle) * m_fLength,
-		-cosf(m_rot.z + m_fAngle) * m_fLength,
+		sinf(m_Rot.z + m_fAngle) * m_fLength,
+		-cosf(m_Rot.z + m_fAngle) * m_fLength,
 		0.0f
 	};
 
-	pVtx[0].col = m_col;
-	pVtx[1].col = m_col;
-	pVtx[2].col = m_col;
-	pVtx[3].col = m_col;
+	pVtx[0].col = m_Col;
+	pVtx[1].col = m_Col;
+	pVtx[2].col = m_Col;
+	pVtx[3].col = m_Col;
 
 	// 頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();
@@ -171,10 +171,10 @@ void CObject_3D::Update()
 void CObject_3D::Draw()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev{ CRenderer::GetInstance()->GetDeviece() };
 
 	// ワールド行列の設定
-	pDev->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+	pDev->SetTransform(D3DTS_WORLD, &m_MtxWorld);
 
 	// 頂点バッファをデータストリームに設定
 	pDev->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
@@ -200,19 +200,27 @@ void CObject_3D::BindTex(LPDIRECT3DTEXTURE9 pTex)
 }
 
 //============================================================================
-// 位置取得
+// もっとテクスチャ割当
 //============================================================================
-D3DXVECTOR3 CObject_3D::GetPos()
+void CObject_3D::BindTex(CTexture_Manager::TYPE Type)
 {
-	return m_pos;
+	m_pTex = CTexture_Manager::GetInstance()->GetTexture(Type);
 }
 
 //============================================================================
-// 位置設定
+// 座標取得
 //============================================================================
-void CObject_3D::SetPos(D3DXVECTOR3 pos)
+D3DXVECTOR3 CObject_3D::GetPos()
 {
-	m_pos = pos;
+	return m_Pos;
+}
+
+//============================================================================
+// 座標設定
+//============================================================================
+void CObject_3D::SetPos(D3DXVECTOR3 Pos)
+{
+	m_Pos = Pos;
 }
 
 //============================================================================
@@ -220,15 +228,15 @@ void CObject_3D::SetPos(D3DXVECTOR3 pos)
 //============================================================================
 D3DXVECTOR3 CObject_3D::GetRot()
 {
-	return m_rot;
+	return m_Rot;
 }
 
 //============================================================================
 // 向き設定
 //============================================================================
-void CObject_3D::SetRot(D3DXVECTOR3 rot)
+void CObject_3D::SetRot(D3DXVECTOR3 Rot)
 {
-	m_rot = rot;
+	m_Rot = Rot;
 }
 
 //============================================================================
@@ -236,15 +244,15 @@ void CObject_3D::SetRot(D3DXVECTOR3 rot)
 //============================================================================
 D3DXVECTOR3 CObject_3D::GetSize()
 {
-	return m_size;
+	return m_Size;
 }
 
 //============================================================================
 // サイズ設定
 //============================================================================
-void CObject_3D::SetSize(D3DXVECTOR3 size)
+void CObject_3D::SetSize(D3DXVECTOR3 Size)
 {
-	m_size = size;
+	m_Size = Size;
 }
 
 //============================================================================
@@ -252,7 +260,7 @@ void CObject_3D::SetSize(D3DXVECTOR3 size)
 //============================================================================
 float& CObject_3D::GetAlpha()
 {
-	return m_col.a;
+	return m_Col.a;
 }
 
 //============================================================================
@@ -260,7 +268,7 @@ float& CObject_3D::GetAlpha()
 //============================================================================
 void CObject_3D::SetAlpha(float fAlpha)
 {
-	m_col.a = fAlpha;
+	m_Col.a = fAlpha;
 }
 
 //============================================================================
@@ -276,7 +284,7 @@ float CObject_3D::GetLength()
 //============================================================================
 CObject_3D* CObject_3D::Create()
 {
-	CObject_3D* pObject3D = DBG_NEW CObject_3D;
+	CObject_3D* pObject3D = DBG_NEW CObject_3D{};
 
 	// 生成出来ていたら初期設定
 	if (pObject3D != nullptr)
@@ -293,30 +301,30 @@ CObject_3D* CObject_3D::Create()
 void CObject_3D::SetMtxWorld()
 {
 	// 計算用行列
-	D3DXMATRIX mtxRot, mtxTrans;
+	D3DXMATRIX mtxRot{}, mtxTrans{};
 
 	// ワールド行列を初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
+	D3DXMatrixIdentity(&m_MtxWorld);
 
 	// 回転行列作成
 	D3DXMatrixRotationYawPitchRoll(&mtxRot,
-		m_rot.y,
-		m_rot.x,
-		m_rot.z);
+		m_Rot.y,
+		m_Rot.x,
+		m_Rot.z);
 
 	// 回転行列との掛け算
-	D3DXMatrixMultiply(&m_mtxWorld,
-		&m_mtxWorld,
+	D3DXMatrixMultiply(&m_MtxWorld,
+		&m_MtxWorld,
 		&mtxRot);
 
 	// 平行移動行列作成
 	D3DXMatrixTranslation(&mtxTrans,
-		m_pos.x,
-		m_pos.y,
-		m_pos.z);
+		m_Pos.x,
+		m_Pos.y,
+		m_Pos.z);
 
 	// 平行移動行列との掛け算
-	D3DXMatrixMultiply(&m_mtxWorld,
-		&m_mtxWorld,
+	D3DXMatrixMultiply(&m_MtxWorld,
+		&m_MtxWorld,
 		&mtxTrans);
 }

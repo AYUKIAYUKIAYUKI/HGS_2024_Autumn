@@ -16,23 +16,22 @@
 //****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
+const float CObject_X::DEFAULT_SCALE_VALUE = 1.0f;	// デフォルトスケール値
 const float CObject_X::DEFAULT_ALPHA_VALUE = 1.0f;	// デフォルトアルファ値
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CObject_X::CObject_X(int nPriority) : CObject(nPriority)
+CObject_X::CObject_X(int nPriority) :
+	CObject{ nPriority },
+	m_pModel{ nullptr },
+	m_Pos{ 0.0f, 0.0f, 0.0f },
+	m_Rot{ 0.0f, 0.0f, 0.0f },
+	m_Size{ 0.0f, 0.0f, 0.0f },
+	m_fScale{ DEFAULT_SCALE_VALUE },
+	m_fAlpha{ DEFAULT_ALPHA_VALUE }
 {
-	m_pModel = nullptr;					// モデル情報
-	m_pos = { 0.0f, 0.0f, 0.0f };		// 位置
-	m_rot = { 0.0f, 0.0f, 0.0f };		// 向き
-	m_size = { 0.0f, 0.0f, 0.0f };		// サイズ
-	m_fScale = 1.0f;					// 縮尺
-	m_fAlpha = DEFAULT_ALPHA_VALUE;		// アルファ値
-	D3DXMatrixIdentity(&m_mtxWorld);	// ワールド行列
-
-	// 判定表示の生成
-	//CRender_Collision::Create(m_pos, m_size);
+	D3DXMatrixIdentity(&m_MtxWorld);	// ワールド行列
 }
 
 //============================================================================
@@ -83,16 +82,16 @@ void CObject_X::Draw()
 	}
 
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev{ CRenderer::GetInstance()->GetDeviece() };
 
 	// 現在のマテリアル保存用
-	D3DMATERIAL9 matDef;
+	D3DMATERIAL9 matDef{};
 
 	// マテリアル情報へのポインタ
-	D3DXMATERIAL* pMat = nullptr;
+	D3DXMATERIAL* pMat{ nullptr };
 
 	// ワールドマトリックスの設定
-	pDev->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+	pDev->SetTransform(D3DTS_WORLD, &m_MtxWorld);
 
 	// 現在のマテリアルを取得
 	pDev->GetMaterial(&matDef);
@@ -124,28 +123,31 @@ void CObject_X::Draw()
 //============================================================================
 void CObject_X::BindModel(CModel_X_Manager::MODEL* pModel)
 {
-	if (pModel->pMesh == nullptr)
-	{ // 取得失敗
-		assert(false);
-	}
-
 	m_pModel = pModel;
 }
 
 //============================================================================
-// 位置取得
+// もっとモデル割当
 //============================================================================
-D3DXVECTOR3 CObject_X::GetPos()
+void CObject_X::BindModel(CModel_X_Manager::TYPE Type)
 {
-	return m_pos;
+	m_pModel = CModel_X_Manager::GetInstance()->GetModel(Type);
 }
 
 //============================================================================
-// 位置設定
+// 座標取得
 //============================================================================
-void CObject_X::SetPos(D3DXVECTOR3 pos)
+D3DXVECTOR3 CObject_X::GetPos()
 {
-	m_pos = pos;
+	return m_Pos;
+}
+
+//============================================================================
+// 座標設定
+//============================================================================
+void CObject_X::SetPos(D3DXVECTOR3 Pos)
+{
+	m_Pos = Pos;
 }
 
 //============================================================================
@@ -153,15 +155,15 @@ void CObject_X::SetPos(D3DXVECTOR3 pos)
 //============================================================================
 D3DXVECTOR3& CObject_X::GetRot()
 {
-	return m_rot;
+	return m_Rot;
 }
 
 //============================================================================
 // 向き設定
 //============================================================================
-void CObject_X::SetRot(D3DXVECTOR3 rot)
+void CObject_X::SetRot(D3DXVECTOR3 Rot)
 {
-	m_rot = rot;
+	m_Rot = Rot;
 }
 
 //============================================================================
@@ -169,15 +171,15 @@ void CObject_X::SetRot(D3DXVECTOR3 rot)
 //============================================================================
 D3DXVECTOR3 CObject_X::GetSize()
 {
-	return m_size;
+	return m_Size;
 }
 
 //============================================================================
 // サイズ設定
 //============================================================================
-void CObject_X::SetSize(D3DXVECTOR3 size)
+void CObject_X::SetSize(D3DXVECTOR3 Size)
 {
-	m_size = size;
+	m_Size = Size;
 }
 
 //============================================================================
@@ -201,7 +203,7 @@ void CObject_X::SetAlpha(float fAlpha)
 //============================================================================
 CObject_X* CObject_X::Create()
 {
-	CObject_X* pObjectX = DBG_NEW CObject_X;
+	CObject_X* pObjectX = DBG_NEW CObject_X{};
 
 	// 生成出来ていたら初期設定
 	if (pObjectX != nullptr)
@@ -221,7 +223,7 @@ void CObject_X::SetMtxWorld()
 	D3DXMATRIX mtxScale{}, mtxRot{}, mtxTrans{};
 
 	// ワールド行列を初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
+	D3DXMatrixIdentity(&m_MtxWorld);
 
 	// 拡縮行列作成
 	D3DXMatrixScaling(&mtxScale,
@@ -230,29 +232,29 @@ void CObject_X::SetMtxWorld()
 		m_fScale);
 
 	// 拡縮行列との掛け算
-	D3DXMatrixMultiply(&m_mtxWorld,
-		&m_mtxWorld,
+	D3DXMatrixMultiply(&m_MtxWorld,
+		&m_MtxWorld,
 		&mtxScale);
 
 	// 回転行列作成
 	D3DXMatrixRotationYawPitchRoll(&mtxRot,
-		m_rot.y,
-		m_rot.x,
-		m_rot.z);
+		m_Rot.y,
+		m_Rot.x,
+		m_Rot.z);
 
 	// 回転行列との掛け算
-	D3DXMatrixMultiply(&m_mtxWorld,
-		&m_mtxWorld,
+	D3DXMatrixMultiply(&m_MtxWorld,
+		&m_MtxWorld,
 		&mtxRot);
 
 	// 平行移動行列作成
 	D3DXMatrixTranslation(&mtxTrans,
-		m_pos.x,
-		m_pos.y,
-		m_pos.z);
+		m_Pos.x,
+		m_Pos.y,
+		m_Pos.z);
 
 	// 平行移動行列との掛け算
-	D3DXMatrixMultiply(&m_mtxWorld,
-		&m_mtxWorld,
+	D3DXMatrixMultiply(&m_MtxWorld,
+		&m_MtxWorld,
 		&mtxTrans);
 }

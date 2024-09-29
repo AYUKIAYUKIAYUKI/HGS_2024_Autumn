@@ -16,21 +16,22 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CObject_2D::CObject_2D(int nPriority) : CObject(nPriority)
+CObject_2D::CObject_2D(int nPriority) :
+	CObject{ nPriority },
+	m_pVtxBuff{ nullptr },
+	m_pTex{ nullptr },
+	m_Pos{ 0.0f, 0.0f, 0.0f },			// 座標
+	m_Rot{ 0.0f, 0.0f, 0.0f },			// 向き
+	m_Size{ 0.0f, 0.0f, 0.0f },			// サイズ
+	m_Col{ 1.0f, 1.0f, 1.0f, 1.0f },	// 色
+	m_fLength{ 0.0f },					// 展開用対角線
+	m_fAngle{ 0.0f },					// 対角線用角度
+	m_fTexWidth{ 1.0f },				// 横テクスチャ分割幅
+	m_fTexHeight{ 1.0f },				// 縦テクスチャ分縦幅
+	m_nNowPatternU{ 0 },				// 現在の横テクスチャ種類
+	m_nNowPatternV{ 0 }					// 現在の縦テクスチャ種類
 {
-	m_pVtxBuff = nullptr;	// 頂点バッファのポインタを初期化
-	m_pTex = nullptr;		// テクスチャのポインタを初期化
 
-	m_pos = { 0.0f, 0.0f, 0.0f };		// 位置
-	m_rot = { 0.0f, 0.0f, 0.0f };		// 向き
-	m_size = { 0.0f, 0.0f, 0.0f };		// サイズ
-	m_col = { 1.0f, 1.0f, 1.0f, 1.0f };	// 色
-	m_fLength = 0.0f;					// 展開用対角線
-	m_fAngle = 0.0f;					// 対角線用角度
-	m_fTexWidth = 1.0f;					// 横テクスチャ分割幅
-	m_fTexHeight = 1.0f;				// 縦テクスチャ分縦幅
-	m_nNowPatternU = 0;					// 現在の横テクスチャ種類
-	m_nNowPatternV = 0;					// 現在の縦テクスチャ種類
 }
 
 //============================================================================
@@ -47,7 +48,7 @@ CObject_2D::~CObject_2D()
 HRESULT CObject_2D::Init()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev{ CRenderer::GetInstance()->GetDeviece() };
 
 	// 頂点バッファの生成
 	pDev->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
@@ -63,7 +64,7 @@ HRESULT CObject_2D::Init()
 	}
 
 	// 頂点情報へのポインタ
-	VERTEX_2D* pVtx;
+	VERTEX_2D* pVtx{ nullptr };
 
 	// 頂点バッファをロック
 	m_pVtxBuff->Lock(0, 0, reinterpret_cast<void**>(&pVtx), 0);
@@ -122,45 +123,45 @@ void CObject_2D::Update()
 	}
 
 	// 必要な数値を算出
-	m_fLength = sqrtf(m_size.x * m_size.x + m_size.y * m_size.y);
-	m_fAngle = atan2f(m_size.x, m_size.y);
+	m_fLength = sqrtf(m_Size.x * m_Size.x + m_Size.y * m_Size.y);
+	m_fAngle = atan2f(m_Size.x, m_Size.y);
 
 	// 頂点情報へのポインタ
-	VERTEX_2D* pVtx;
+	VERTEX_2D* pVtx{ nullptr };
 
 	// 頂点バッファをロック
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 位置の設定
 	pVtx[0].pos = {
-		m_pos.x + sinf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
-		m_pos.y + cosf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
+		m_Pos.x + sinf(m_Rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
+		m_Pos.y + cosf(m_Rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
 		0.0f
 	};
 
 	pVtx[1].pos = {
-		m_pos.x + sinf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
-		m_pos.y + cosf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
+		m_Pos.x + sinf(m_Rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
+		m_Pos.y + cosf(m_Rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
 		0.0f
 	};
 
 	pVtx[2].pos = {
-		m_pos.x + sinf(m_rot.z - m_fAngle) * m_fLength,
-		m_pos.y + cosf(m_rot.z - m_fAngle) * m_fLength,
+		m_Pos.x + sinf(m_Rot.z - m_fAngle) * m_fLength,
+		m_Pos.y + cosf(m_Rot.z - m_fAngle) * m_fLength,
 		0.0f
 	};
 
 	pVtx[3].pos = {
-		m_pos.x + sinf(m_rot.z + m_fAngle) * m_fLength,
-		m_pos.y + cosf(m_rot.z + m_fAngle) * m_fLength,
+		m_Pos.x + sinf(m_Rot.z + m_fAngle) * m_fLength,
+		m_Pos.y + cosf(m_Rot.z + m_fAngle) * m_fLength,
 		0.0f
 	};
 
 	// 色の設定
-	pVtx[0].col = m_col;
-	pVtx[1].col = m_col;
-	pVtx[2].col = m_col;
-	pVtx[3].col = m_col;
+	pVtx[0].col = m_Col;
+	pVtx[1].col = m_Col;
+	pVtx[2].col = m_Col;
+	pVtx[3].col = m_Col;
 
 	// テクスチャの設定
 	pVtx[0].tex = { m_fTexWidth * m_nNowPatternU, m_fTexHeight * m_nNowPatternV };
@@ -178,7 +179,7 @@ void CObject_2D::Update()
 void CObject_2D::Draw()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev{ CRenderer::GetInstance()->GetDeviece() };
 
 	// 頂点バッファをデータストリームに設定
 	pDev->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
@@ -212,19 +213,19 @@ void CObject_2D::BindTex(CTexture_Manager::TYPE Type)
 }
 
 //============================================================================
-// 位置取得
+// 座標取得
 //============================================================================
 D3DXVECTOR3 CObject_2D::GetPos()
 {
-	return m_pos;
+	return m_Pos;
 }
 
 //============================================================================
-// 位置設定
+// 座標設定
 //============================================================================
-void CObject_2D::SetPos(D3DXVECTOR3 pos)
+void CObject_2D::SetPos(D3DXVECTOR3 Pos)
 {
-	m_pos = pos;
+	m_Pos = Pos;
 }
 
 //============================================================================
@@ -232,15 +233,15 @@ void CObject_2D::SetPos(D3DXVECTOR3 pos)
 //============================================================================
 D3DXVECTOR3 CObject_2D::GetRot()
 {
-	return m_rot;
+	return m_Rot;
 }
 
 //============================================================================
 // 向き設定
 //============================================================================
-void CObject_2D::SetRot(D3DXVECTOR3 rot)
+void CObject_2D::SetRot(D3DXVECTOR3 Rot)
 {
-	m_rot = rot;
+	m_Rot = Rot;
 }
 
 //============================================================================
@@ -248,15 +249,15 @@ void CObject_2D::SetRot(D3DXVECTOR3 rot)
 //============================================================================
 D3DXVECTOR3 CObject_2D::GetSize()
 {
-	return m_size;
+	return m_Size;
 }
 
 //============================================================================
 // サイズ設定
 //============================================================================
-void CObject_2D::SetSize(D3DXVECTOR3 size)
+void CObject_2D::SetSize(D3DXVECTOR3 Size)
 {
-	m_size = size;
+	m_Size = Size;
 }
 
 //============================================================================
@@ -264,15 +265,15 @@ void CObject_2D::SetSize(D3DXVECTOR3 size)
 //============================================================================
 D3DXCOLOR CObject_2D::GetCol()
 {
-	return m_col;
+	return m_Col;
 }
 
 //============================================================================
 // 色を設定
 //============================================================================
-void CObject_2D::SetCol(D3DXCOLOR col)
+void CObject_2D::SetCol(D3DXCOLOR Col)
 {
-	m_col = col;
+	m_Col = Col;
 }
 
 //============================================================================
@@ -280,7 +281,7 @@ void CObject_2D::SetCol(D3DXCOLOR col)
 //============================================================================
 float& CObject_2D::GetAlpha()
 {
-	return m_col.a;
+	return m_Col.a;
 }
 
 //============================================================================
@@ -288,7 +289,7 @@ float& CObject_2D::GetAlpha()
 //============================================================================
 void CObject_2D::SetAlpha(float fAlpha)
 {
-	m_col.a = fAlpha;
+	m_Col.a = fAlpha;
 }
 
 //============================================================================
@@ -352,7 +353,7 @@ void CObject_2D::SetNowPatternV(int nNowPatternV)
 //============================================================================
 CObject_2D* CObject_2D::Create()
 {
-	CObject_2D* pObject2D = DBG_NEW CObject_2D;
+	CObject_2D* pObject2D = DBG_NEW CObject_2D{};
 
 	// 生成出来ていたら初期設定
 	if (pObject2D != nullptr)

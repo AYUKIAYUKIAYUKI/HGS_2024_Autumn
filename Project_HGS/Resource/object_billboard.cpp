@@ -16,21 +16,21 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CObject_billboard::CObject_billboard(int nPriority) : CObject(nPriority)
+CObject_billboard::CObject_billboard(int nPriority) :
+	CObject{ nPriority },
+	m_pVtxBuff{ nullptr },
+	m_pTex{ nullptr },
+	m_Pos{ 0.0f, 0.0f, 0.0f },			// 座標
+	m_Rot{ 0.0f, 0.0f, 0.0f },			// 向き
+	m_Size{ 0.0f, 0.0f, 0.0f },			// サイズ
+	m_fLength{ 0.0f },					// 展開用対角線
+	m_fAngle{ 0.0f },					// 対角線用角度
+	m_fTexWidth{ 1.0f },				// 横テクスチャ分割幅
+	m_fTexHeight{ 1.0f },				// 縦テクスチャ分縦幅
+	m_nNowPatternU{ 0 },				// 現在の横テクスチャ種類
+	m_nNowPatternV{ 0 }					// 現在の縦テクスチャ種類
 {
-	m_pVtxBuff = nullptr;	// 頂点バッファのポインタを初期化
-	m_pTex = nullptr;		// テクスチャのポインタを初期化
-
-	m_pos = { 0.0f, 0.0f, 0.0f };		// 位置
-	m_rot = { 0.0f, 0.0f, 0.0f };		// 向き
-	m_size = { 0.0f, 0.0f, 0.0f };		// サイズ
-	m_fLength = 0.0f;					// 展開用対角線
-	m_fAngle = 0.0f;					// 対角線用角度
-	m_fTexWidth = 1.0f;					// 横テクスチャ分割幅
-	m_fTexHeight = 1.0f;				// 縦テクスチャ分縦幅
-	m_nNowPatternU = 0;					// 現在の横テクスチャ種類
-	m_nNowPatternV = 0;					// 現在の縦テクスチャ種類
-	D3DXMatrixIdentity(&m_mtxWorld);	// ワールド行列
+	D3DXMatrixIdentity(&m_MtxWorld);	// ワールド行列
 }
 
 //============================================================================
@@ -47,7 +47,7 @@ CObject_billboard::~CObject_billboard()
 HRESULT CObject_billboard::Init()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev{ CRenderer::GetInstance()->GetDeviece() };
 
 	// 頂点バッファの生成
 	pDev->CreateVertexBuffer(sizeof(VERTEX_3D) * 4,
@@ -63,7 +63,7 @@ HRESULT CObject_billboard::Init()
 	}
 
 	// 頂点情報へのポインタ
-	VERTEX_3D* pVtx;
+	VERTEX_3D* pVtx{ nullptr };
 
 	// 頂点バッファをロック
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -122,37 +122,37 @@ void CObject_billboard::Update()
 	}
 
 	// 必要な数値を計算
-	m_fAngle = atan2f(m_size.x, m_size.y);
-	m_fLength = sqrtf(m_size.x * m_size.x + m_size.y * m_size.y);
+	m_fAngle = atan2f(m_Size.x, m_Size.y);
+	m_fLength = sqrtf(m_Size.x * m_Size.x + m_Size.y * m_Size.y);
 
 	// 頂点情報へのポインタ
-	VERTEX_3D* pVtx;
+	VERTEX_3D* pVtx{ nullptr };
 
 	// 頂点バッファをロック
 	m_pVtxBuff->Lock(0, 0, reinterpret_cast<void**>(&pVtx), 0);
 
 	// 位置の設定
 	pVtx[0].pos = {
-		sinf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
-		-cosf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
+		sinf(m_Rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
+		-cosf(m_Rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
 		0.0f
 	};
 
 	pVtx[1].pos = {
-		sinf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
-		-cosf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
+		sinf(m_Rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
+		-cosf(m_Rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
 		0.0f
 	};
 
 	pVtx[2].pos = {
-		sinf(m_rot.z - m_fAngle) * m_fLength,
-		-cosf(m_rot.z - m_fAngle) * m_fLength,
+		sinf(m_Rot.z - m_fAngle) * m_fLength,
+		-cosf(m_Rot.z - m_fAngle) * m_fLength,
 		0.0f
 	};
 
 	pVtx[3].pos = {
-		sinf(m_rot.z + m_fAngle) * m_fLength,
-		-cosf(m_rot.z + m_fAngle) * m_fLength,
+		sinf(m_Rot.z + m_fAngle) * m_fLength,
+		-cosf(m_Rot.z + m_fAngle) * m_fLength,
 		0.0f
 	};
 
@@ -175,7 +175,7 @@ void CObject_billboard::Update()
 void CObject_billboard::Draw()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev{ CRenderer::GetInstance()->GetDeviece() };
 
 	//// 深度テストの比較方法の変更
 	//pDev->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
@@ -192,7 +192,7 @@ void CObject_billboard::Draw()
 	pDev->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	// ワールド行列の設定
-	pDev->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+	pDev->SetTransform(D3DTS_WORLD, &m_MtxWorld);
 
 	// 頂点バッファをデータストリームに設定
 	pDev->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
@@ -230,19 +230,27 @@ void CObject_billboard::BindTex(LPDIRECT3DTEXTURE9 pTex)
 }
 
 //============================================================================
+// もっとテクスチャ割当
+//============================================================================
+void CObject_billboard::BindTex(CTexture_Manager::TYPE Type)
+{
+	m_pTex = CTexture_Manager::GetInstance()->GetTexture(Type);
+}
+
+//============================================================================
 // 位置取得
 //============================================================================
 D3DXVECTOR3 CObject_billboard::GetPos()
 {
-	return m_pos;
+	return m_Pos;
 }
 
 //============================================================================
 // 位置設定
 //============================================================================
-void CObject_billboard::SetPos(D3DXVECTOR3 pos)
+void CObject_billboard::SetPos(D3DXVECTOR3 Pos)
 {
-	m_pos = pos;
+	m_Pos = Pos;
 }
 
 //============================================================================
@@ -250,15 +258,15 @@ void CObject_billboard::SetPos(D3DXVECTOR3 pos)
 //============================================================================
 D3DXVECTOR3 CObject_billboard::GetRot()
 {
-	return m_rot;
+	return m_Rot;
 }
 
 //============================================================================
 // 向き設定
 //============================================================================
-void CObject_billboard::SetRot(D3DXVECTOR3 rot)
+void CObject_billboard::SetRot(D3DXVECTOR3 Rot)
 {
-	m_rot = rot;
+	m_Rot = Rot;
 }
 
 //============================================================================
@@ -266,15 +274,15 @@ void CObject_billboard::SetRot(D3DXVECTOR3 rot)
 //============================================================================
 D3DXVECTOR3 CObject_billboard::GetSize()
 {
-	return m_size;
+	return m_Size;
 }
 
 //============================================================================
 // サイズ設定
 //============================================================================
-void CObject_billboard::SetSize(D3DXVECTOR3 size)
+void CObject_billboard::SetSize(D3DXVECTOR3 Size)
 {
-	m_size = size;
+	m_Size = Size;
 }
 
 //============================================================================
@@ -338,7 +346,7 @@ void CObject_billboard::SetNowPatternV(int nNowPatternV)
 //============================================================================
 CObject_billboard* CObject_billboard::Create()
 {
-	CObject_billboard* pObject3D = DBG_NEW CObject_billboard;
+	CObject_billboard* pObject3D = DBG_NEW CObject_billboard{};
 
 	// 生成出来ていたら初期設定
 	if (pObject3D != nullptr)
@@ -354,44 +362,44 @@ CObject_billboard* CObject_billboard::Create()
 //============================================================================
 void CObject_billboard::SetMtxWorld()
 {
-	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev{ CRenderer::GetInstance()->GetDeviece() };
 
 	// 計算用行列
-	D3DXMATRIX mtxRot, mtxTrans, mtxView;
+	D3DXMATRIX mtxRot{}, mtxTrans{}, mtxView{};
 
 	// ワールド行列を初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
+	D3DXMatrixIdentity(&m_MtxWorld);
 
 	// ビュー行列取得
 	pDev->GetTransform(D3DTS_VIEW, &mtxView);
 
 	// ポリゴンをカメラの正面に向け続ける
-	D3DXMatrixInverse(&m_mtxWorld, nullptr, &mtxView);
+	D3DXMatrixInverse(&m_MtxWorld, nullptr, &mtxView);
 
 	// 逆行列を求める
-	m_mtxWorld._41 = 0.0f;
-	m_mtxWorld._42 = 0.0f;
-	m_mtxWorld._43 = 0.0f;
+	m_MtxWorld._41 = 0.0f;
+	m_MtxWorld._42 = 0.0f;
+	m_MtxWorld._43 = 0.0f;
 
 	// 回転行列作成
 	D3DXMatrixRotationYawPitchRoll(&mtxRot,
-		m_rot.y,
-		m_rot.x,
-		m_rot.z);
+		m_Rot.y,
+		m_Rot.x,
+		m_Rot.z);
 
 	// 回転行列との掛け算
-	D3DXMatrixMultiply(&m_mtxWorld,
-		&m_mtxWorld,
+	D3DXMatrixMultiply(&m_MtxWorld,
+		&m_MtxWorld,
 		&mtxRot);
 
 	// 平行移動行列作成
 	D3DXMatrixTranslation(&mtxTrans,
-		m_pos.x,
-		m_pos.y,
-		m_pos.z);
+		m_Pos.x,
+		m_Pos.y,
+		m_Pos.z);
 
 	// 平行移動行列との掛け算
-	D3DXMatrixMultiply(&m_mtxWorld,
-		&m_mtxWorld,
+	D3DXMatrixMultiply(&m_MtxWorld,
+		&m_MtxWorld,
 		&mtxTrans);
 }

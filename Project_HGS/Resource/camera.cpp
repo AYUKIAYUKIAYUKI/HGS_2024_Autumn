@@ -20,20 +20,20 @@
 // デフォルトコンストラクタ
 //============================================================================
 CCamera::CCamera() :
-	m_pos{ 0.0f, 0.0f, 0.0f },
-	m_posTarget{ 0.0f, 0.0f, 0.0f },
-	m_posV{ 0.0f, 0.0f, 0.0f },
-	m_posTargetV{ 0.0f, 0.0f, 0.0f },
-	m_posR{ 0.0f, 0.0f, 0.0f },
-	m_posTargetR{ 0.0f, 0.0f, 0.0f },
-	m_rot{ 0.0f, 0.0f, 0.0f },
-	m_rotTarget{ 0.0f, 0.0f, 0.0f },
+	m_Pos{ 0.0f, 0.0f, 0.0f },
+	m_PosTarget{ 0.0f, 0.0f, 0.0f },
+	m_PosV{ 0.0f, 0.0f, 0.0f },
+	m_PosTargetV{ 0.0f, 0.0f, 0.0f },
+	m_PosR{ 0.0f, 0.0f, 0.0f },
+	m_PosTargetR{ 0.0f, 0.0f, 0.0f },
+	m_Rot{ 0.0f, 0.0f, 0.0f },
+	m_RotTarget{ 0.0f, 0.0f, 0.0f },
 	m_fDistance{ 0.0f },
-	m_vecU{ 0.0f, 1.0f, 0.0f },
+	m_VecU{ 0.0f, 1.0f, 0.0f },
 	m_fAdjust{ 0.0f }
 {
-	D3DXMatrixIdentity(&m_mtxProjection);	// プロジェクションマトリックス
-	D3DXMatrixIdentity(&m_mtxView);			// ビューマトリックス
+	D3DXMatrixIdentity(&m_MtxProjection);	// プロジェクションマトリックス
+	D3DXMatrixIdentity(&m_MtxView);			// ビューマトリックス
 }
 
 //============================================================================
@@ -73,6 +73,11 @@ void CCamera::Update()
 
 	// 注視点位置を算出
 	CalcPosR();
+
+#ifdef _DEBUG
+	CRenderer::GetInstance()->SetDebugString("カメラ座標 : " + std::to_string(m_Pos.x) + " :  " + std::to_string(m_Pos.y) + " : " + std::to_string(m_Pos.z));
+	CRenderer::GetInstance()->SetDebugString("カメラ向き : " + std::to_string(m_Rot.x) + " :  " + std::to_string(m_Rot.y) + " : " + std::to_string(m_Rot.z));
+#endif // _DEBUG
 }
 
 //============================================================================
@@ -86,7 +91,7 @@ void CCamera::SetCamera()
 	// 画面バッファクリア
 	pDev->Clear(0, nullptr,
 		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-		D3DCOLOR_RGBA(0, 0, 0, 255), 1.0f, 0);
+		D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
 
 	// プロジェクション行列を計算
 	CalcMtxProjection();
@@ -96,35 +101,35 @@ void CCamera::SetCamera()
 }
 
 //============================================================================
-// 位置を取得
+// 座標を取得
 //============================================================================
 D3DXVECTOR3 CCamera::GetPos()
 {
-	return m_pos;
+	return m_Pos;
 }
 
 //============================================================================
-// 位置を設定
+// 座標を設定
 //============================================================================
-void CCamera::SetPos(D3DXVECTOR3 pos)
+void CCamera::SetPos(D3DXVECTOR3 Pos)
 {
-	m_pos = pos;
+	m_Pos = Pos;
 }
 
 //============================================================================
-// 目標位置を取得
+// 目標座標を取得
 //============================================================================
 D3DXVECTOR3 CCamera::GetPosTarget()
 {
-	return m_posTarget;
+	return m_PosTarget;
 }
 
 //============================================================================
-// 目標位置を設定
+// 目標座標を設定
 //============================================================================
-void CCamera::SetPosTarget(D3DXVECTOR3 posTarget)
+void CCamera::SetPosTarget(D3DXVECTOR3 PosTarget)
 {
-	m_posTarget = posTarget;
+	m_PosTarget = PosTarget;
 }
 
 //============================================================================
@@ -132,7 +137,31 @@ void CCamera::SetPosTarget(D3DXVECTOR3 posTarget)
 //============================================================================
 D3DXVECTOR3 CCamera::GetRot()
 {
-	return m_rot;
+	return m_Rot;
+}
+
+//============================================================================
+// 向きを設定
+//============================================================================
+void CCamera::SetRot(D3DXVECTOR3 Rot)
+{
+	m_Rot = Rot;
+}
+
+//============================================================================
+// 目標向きを取得
+//============================================================================
+D3DXVECTOR3 CCamera::GetRotTarget()
+{
+	return m_RotTarget;
+}
+
+//============================================================================
+// 目標向きを設定
+//============================================================================
+void CCamera::SetRotTarget(D3DXVECTOR3 RotTarget)
+{
+	m_RotTarget = RotTarget;
 }
 
 //============================================================================
@@ -174,21 +203,21 @@ void CCamera::Control()
 	// 左右
 	if (CManager::GetKeyboard()->GetPress(DIK_RIGHT))
 	{
-		m_rotTarget.y += 0.02f;
+		m_RotTarget.y += 0.02f;
 	}
 	else if (CManager::GetKeyboard()->GetPress(DIK_LEFT))
 	{
-		m_rotTarget.y -= 0.02f;
+		m_RotTarget.y -= 0.02f;
 	}
 
 	// 上下
 	if (CManager::GetKeyboard()->GetPress(DIK_UP))
 	{
-		m_rotTarget.x += 0.02f;
+		m_RotTarget.x += 0.02f;
 	}
 	else if (CManager::GetKeyboard()->GetPress(DIK_DOWN))
 	{
-		m_rotTarget.x -= 0.02f;
+		m_RotTarget.x -= 0.02f;
 	}
 }
 
@@ -198,10 +227,10 @@ void CCamera::Control()
 void CCamera::Rotation()
 {
 	// 回転量減衰
-	m_rotTarget *= 0.8f;
+	m_RotTarget *= 0.8f;
 
 	// 回転量反映
-	m_rot += m_rotTarget * 0.5f;
+	m_Rot += m_RotTarget * 0.5f;
 
 	// ヨー角の範囲を制限
 	RestrictYaw();
@@ -220,7 +249,7 @@ void CCamera::Translation()
 
 	// 移動量反映
 	// posTargetに値を設定していない場合は数値がおかしくなります
-	m_pos += (m_posTarget - m_pos) * fTracking;
+	m_Pos += (m_PosTarget - m_Pos) * fTracking;
 }
 
 //============================================================================
@@ -228,13 +257,13 @@ void CCamera::Translation()
 //============================================================================
 void CCamera::RestrictYaw()
 {
-	if (m_rot.y > D3DX_PI)
+	if (m_Rot.y > D3DX_PI)
 	{
-		m_rot.y = -D3DX_PI;
+		m_Rot.y = -D3DX_PI;
 	}
-	else if (m_rot.y < -D3DX_PI)
+	else if (m_Rot.y < -D3DX_PI)
 	{
-		m_rot.y = D3DX_PI;
+		m_Rot.y = D3DX_PI;
 	}
 }
 
@@ -246,13 +275,13 @@ void CCamera::RestrictPitch()
 	// 0 ～ 0.5
 	float fCoeff{ 0.48f };
 
-	if (m_rot.x + m_rotTarget.x > D3DX_PI * fCoeff)
+	if (m_Rot.x + m_RotTarget.x > D3DX_PI * fCoeff)
 	{
-		m_rot.x = D3DX_PI * fCoeff;
+		m_Rot.x = D3DX_PI * fCoeff;
 	}
-	else if (m_rot.x + m_rotTarget.x < -D3DX_PI * fCoeff)
+	else if (m_Rot.x + m_RotTarget.x < -D3DX_PI * fCoeff)
 	{
-		m_rot.x = -D3DX_PI * fCoeff;
+		m_Rot.x = -D3DX_PI * fCoeff;
 	}
 }
 
@@ -262,11 +291,11 @@ void CCamera::RestrictPitch()
 void CCamera::CalcPosV()
 {
 	// 視点は対象物の後方に
-	m_posV =
+	m_PosV =
 	{
-		m_pos.x - (sinf(m_rot.y) * cosf(m_rot.x) * (m_fDistance)),
-		m_pos.y - (sinf(m_rot.x) * (m_fDistance)),
-		m_pos.z - (cosf(m_rot.y) * cosf(m_rot.x) * (m_fDistance))
+		m_Pos.x - (sinf(m_Rot.y) * cosf(m_Rot.x) * (m_fDistance)),
+		m_Pos.y - (sinf(m_Rot.x) * (m_fDistance)),
+		m_Pos.z - (cosf(m_Rot.y) * cosf(m_Rot.x) * (m_fDistance))
 	};
 }
 
@@ -276,11 +305,11 @@ void CCamera::CalcPosV()
 void CCamera::CalcPosR()
 {
 	// 注視点を対象物の前方に
-	m_posR =
+	m_PosR =
 	{
-		m_pos.x + (sinf(m_rot.y) * cosf(m_rot.x) * m_fDistance),
-		m_pos.y + (sinf(m_rot.x) * m_fDistance),
-		m_pos.z + (cosf(m_rot.y) * cosf(m_rot.x) * m_fDistance)
+		m_Pos.x + (sinf(m_Rot.y) * cosf(m_Rot.x) * m_fDistance),
+		m_Pos.y + (sinf(m_Rot.x) * m_fDistance),
+		m_Pos.z + (cosf(m_Rot.y) * cosf(m_Rot.x) * m_fDistance)
 	};
 }
 
@@ -293,19 +322,19 @@ void CCamera::CalcMtxProjection()
 	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	// プロジェクション行列の初期化
-	D3DXMatrixIdentity(&m_mtxProjection);
+	D3DXMatrixIdentity(&m_MtxProjection);
 
 	// プロジェクション行列を生成
 #if 1
 	// 透視投影
-	D3DXMatrixPerspectiveFovLH(&m_mtxProjection,
+	D3DXMatrixPerspectiveFovLH(&m_MtxProjection,
 		D3DXToRadian(45.0f),
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,
 		10.0f,
 		5000.0f);	
 #else
 	// 平行投影
-	D3DXMatrixOrthoLH(&m_mtxProjection,
+	D3DXMatrixOrthoLH(&m_MtxProjection,
 		(float)SCREEN_WIDTH * 0.25f,
 		(float)SCREEN_HEIGHT * 0.25f,
 		10.0f,
@@ -314,7 +343,7 @@ void CCamera::CalcMtxProjection()
 
 	// プロジェクション行列の設定
 	pDev->SetTransform(D3DTS_PROJECTION,
-		&m_mtxProjection);
+		&m_MtxProjection);
 }
 
 //============================================================================
@@ -326,22 +355,22 @@ void CCamera::CalcMtxView()
 	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	// ビューマトリックスの初期化
-	D3DXMatrixIdentity(&m_mtxView);
+	D3DXMatrixIdentity(&m_MtxView);
 
 	// 視点位置の調整用
-	D3DXVECTOR3 posV = m_posV;
-	D3DXVECTOR3 posR = m_posR;
+	D3DXVECTOR3 posV = m_PosV;
+	D3DXVECTOR3 posR = m_PosR;
 
 	// カメラを俯瞰気味に
-	posV.y += m_fAdjust;
+	//posV.y += m_fAdjust;
 
 	// ビューマトリックスの生成
-	D3DXMatrixLookAtLH(&m_mtxView,
+	D3DXMatrixLookAtLH(&m_MtxView,
 		&posV,
 		&posR,
-		&m_vecU);
+		&m_VecU);
 
 	// ビューマトリックスの設定
 	pDev->SetTransform(D3DTS_VIEW,
-		&m_mtxView);
+		&m_MtxView);
 }
