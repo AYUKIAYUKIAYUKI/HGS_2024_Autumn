@@ -13,6 +13,8 @@
 // インプット取得用
 #include "manager.h"
 
+#include "renderer.h"
+
 /* test */
 #include "object_2D.h"
 #include "texture_manager.h"

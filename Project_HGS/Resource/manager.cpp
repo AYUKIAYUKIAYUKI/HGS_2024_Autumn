@@ -14,7 +14,6 @@
 #include "fade.h"
 #include "renderer.h"
 #include "sound.h"
-#include "utility.h"
 
 //****************************************************
 // 静的メンバの初期化
@@ -51,12 +50,6 @@ CManager::~CManager()
 //============================================================================
 HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
-	// 便利関数の初期設定
-	if (FAILED(CUtility::GetInstance()->Init()))
-	{
-		return E_FAIL;
-	}
-
 	// レンダラーの初期設定
 	if (FAILED(CRenderer::GetInstance()->Init(hWnd, bWindow)))
 	{
@@ -179,9 +172,6 @@ void CManager::Uninit()
 
 	// フェードの破棄
 	CFade::GetInstance()->Release();
-
-	// 便利関数の破棄
-	CUtility::GetInstance()->Release();
 }
 
 //============================================================================

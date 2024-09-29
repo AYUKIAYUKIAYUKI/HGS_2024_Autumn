@@ -15,26 +15,11 @@ class CUtility final
 {
 public:
 
-	HRESULT Init();	// 初期設定
-	void Release();	// 破棄
-
-	static CUtility* GetInstance();	// 便利関数を取得
-
 	// 乱数生成
-	template <typename T> T GetRandomValue();
+	template <typename T> static T GetRandomValue();
 
 	// ダウンキャスト
-	template <typename T1, typename T2> T1* DownCast(T2* pBase);
-
-private:
-
-	CUtility();		// コンストラクタ
-	~CUtility();	// デストラクタ
-
-	void Create();	// 生成
-	void Uninit();	// 終了処理
-
-	static CUtility* m_pInstance;	// 便利関数
+	template <typename T1, typename T2> static T1* DownCast(T2* pBase);
 };
 
 //============================================================================

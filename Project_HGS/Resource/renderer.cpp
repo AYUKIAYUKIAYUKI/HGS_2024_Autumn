@@ -9,7 +9,6 @@
 // インクルードファイル
 //****************************************************
 #include "renderer.h"
-#include "utility.h"
 
 // 描画処理用
 #include "manager.h"

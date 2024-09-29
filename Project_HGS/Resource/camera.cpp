@@ -9,7 +9,6 @@
 // インクルードファイル
 //****************************************************
 #include "camera.h"
-#include "utility.h"
 
 // インプット取得用
 #include "manager.h"
