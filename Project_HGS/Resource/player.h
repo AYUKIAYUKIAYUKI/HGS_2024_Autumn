@@ -31,16 +31,18 @@ public:
 
 	static CPlayer* Create(const D3DXVECTOR3& inPos, const D3DXVECTOR3& inSize, const D3DXCOLOR& inCol);	// 生成
 
-	static constexpr float MARGIN_WIDTH = 300.0f;							// 余幅 (幅)
-	static constexpr float MARGIN_HEIGHT = 200.0f;							// 余幅 (高さ)
-	static constexpr float LINE_WIDTH = SCREEN_WIDTH - MARGIN_WIDTH;	// 線の幅
-	static constexpr float LINE_HEIGHT = 5.0f;							// 線の高さ
+	static constexpr float MARGIN_WIDTH = 300.0f;								// 余幅 (幅)
+	static constexpr float MARGIN_HEIGHT = 200.0f;								// 余幅 (高さ)
+	static constexpr float LINE_WIDTH = (SCREEN_WIDTH - MARGIN_WIDTH * 2.0f) * 0.5f;	// 線の幅
+	static constexpr float LINE_HEIGHT = 5.0f;									// 線の高さ
 
 private:
 	enum class PLAYER_FLAG : BYTE
 	{
 		NONE = 0u,
 		CAN_INPUT = 1 << 0,
+		CAN_LEFT = 1 << 1,
+		CAN_RIGHT = 1 << 2,
 	};
 
 	enum LINE_TYPE
@@ -49,7 +51,7 @@ private:
 		LINE_TYPE_UNDER,
 		LINE_TYPE_LEFT,
 		LINE_TYPE_RIGHT,
-		MAX
+		LINE_TYPE_MAX
 	};
 
 	CPlayer(const CPlayer&) = delete;
@@ -59,4 +61,6 @@ private:
 	BYTE m_PlayerFlag;		// プレイヤーフラグ
 
 	std::vector<CLine**> m_Lines;	// 線たち
+
+	float m_graceCounter;	// 猶予カウント
 };

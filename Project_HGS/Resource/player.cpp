@@ -34,9 +34,13 @@ namespace /* anonymous */
 CPlayer::CPlayer(int nPriority)
 	: CCharacter{ nPriority }
 	, m_PrevPos{ 0.0f, 0.0f, 0.0f }
-	, m_PlayerFlag{ 0x01 }
+	, m_PlayerFlag{ 0x00 }
 {
-	// DO_NOTHING
+#if 1
+	m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
+	m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_LEFT);
+	m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_RIGHT);
+#endif
 }
 
 //============================================================================
@@ -124,6 +128,9 @@ void CPlayer::Update()
 {
 	m_PrevPos = GetPos();
 
+	bool bRevivalLeft = false;
+	bool bRevivalRight = false;
+
 	// à⁄ìÆó ÇÃê›íË
 	if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT))
 	{ // à⁄ìÆâ¬î\
@@ -133,6 +140,7 @@ void CPlayer::Update()
 		bool bTriggerRight = CManager::GetKeyboard()->GetTrigger(DIK_RIGHT);
 
 		D3DXVECTOR3 move = GetMove();
+		move.x = 0.0f;
 
 		if ((bPressLeft && bTriggerRight) || (bPressRight && bTriggerLeft))
 		{ // ìØéûâüÇµ
@@ -148,15 +156,23 @@ void CPlayer::Update()
 
 			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
 		}
-		else if (bTriggerLeft)
+		else if (bPressLeft && !bPressRight)
 		{ // ç∂
-			move = { -MOVE_SPEED, 0.0f, 0.0f };
-			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
+			if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::CAN_LEFT))
+			{
+				move = { -MOVE_SPEED, 0.0f, 0.0f };
+				m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_RIGHT);
+				bRevivalRight = true;
+			}
 		}
-		else if (bTriggerRight)
+		else if (bPressRight && !bPressLeft)
 		{ // âE
-			move = { MOVE_SPEED, 0.0f, 0.0f };
-			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
+			if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::CAN_RIGHT))
+			{
+				move = { MOVE_SPEED, 0.0f, 0.0f };
+				m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_LEFT);
+				bRevivalLeft = true;
+			}
 		}
 
 		SetMove(move);
@@ -180,7 +196,6 @@ void CPlayer::Update()
 				bool isCollision = Collision::IsSegmentsCollide(segmentPlayer, segmentLine);
 				if (isCollision)
 				{ // è’ìÀ
-					// è’ìÀÇµÇΩ
 					m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
 
 					//if (m_PrevPos != currPos)
@@ -217,7 +232,6 @@ void CPlayer::Update()
 				bool isCollision = Collision::IsSegmentsCollide(segmentPlayer, segmentLine);
 				if (isCollision)
 				{ // è’ìÀ
-					// è’ìÀÇµÇΩ
 					m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
 
 					//if (m_PrevPos != currPos)
@@ -239,75 +253,92 @@ void CPlayer::Update()
 		}
 	}
 	
-	bool bLeftAndRight = false;
-	if (m_Lines[LINE_TYPE_LEFT] != nullptr)
+	// ç∂âEÇÃìñÇΩÇËîªíË
+	for (uint32_t i = LINE_TYPE_LEFT; i < LINE_TYPE_MAX; i++)
 	{
-		CLine* pLine = *m_Lines[LINE_TYPE_LEFT];
-		if (pLine != nullptr)
+		if (!m_Lines[i])
 		{
-			if (!pLine->GetIsUnderPlayer())
+			continue;
+		}
+
+		CLine* pLine = *m_Lines[i];
+		if (!pLine)
+		{
+			continue;
+		}
+
+		if (pLine->GetIsUnderPlayer())
+		{
+			continue;
+		}
+
+		D3DXVECTOR3 currPos = GetPos();
+		Collision::LineSegment2D segmentPlayer{ { m_PrevPos.x, m_PrevPos.y }, { currPos.x, currPos.y } };
+		Collision::LineSegment2D segmentLine = pLine->GetLineSegment2D();
+		bool isCollision = Collision::IsSegmentsCollide(segmentPlayer, segmentLine);
+		if (!isCollision)
+		{ // ñ¢è’ìÀ
+			continue;
+		}
+
+		// è’ìÀÇµÇΩ
+		m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
+
+		D3DXVECTOR2 pos = Collision::GetCrossPoint(segmentPlayer, segmentLine);
+
+		D3DXVECTOR3 move = GetMove();
+		move.x = 0.0f;
+		SetMove(move);
+		SetPos({ pos.x, pos.y, 0.0f });
+
+		pLine->SetIsUnderPlayer(true);
+
+		if (i == LINE_TYPE_LEFT)
+		{
+			if (m_Lines[LINE_TYPE_RIGHT])
 			{
-				D3DXVECTOR3 currPos = GetPos();
-				Collision::LineSegment2D segmentPlayer{ { m_PrevPos.x, m_PrevPos.y }, { currPos.x, currPos.y } };
-				Collision::LineSegment2D segmentLine = pLine->GetLineSegment2D();
-				bool isCollision = Collision::IsSegmentsCollide(segmentPlayer, segmentLine);
-				if (isCollision)
-				{ // è’ìÀ
-					// è’ìÀÇµÇΩ
-					m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
-
-					//if (m_PrevPos != currPos)
-					D3DXVECTOR2 pos = Collision::GetCrossPoint(segmentPlayer, segmentLine);
-
-					D3DXVECTOR3 move = GetMove();
-					move.x = 0.0f;
-					SetMove(move);
-					SetPos({ pos.x, pos.y, 0.0f });
-
-					pLine->SetIsUnderPlayer(true);
-
-					if (CLine* pUnder = *m_Lines[LINE_TYPE_RIGHT])
-					{
-						pUnder->SetIsUnderPlayer(false);
-					}
-
-					bLeftAndRight = true;
+				if (CLine* pUnder = *m_Lines[LINE_TYPE_RIGHT])
+				{
+					pUnder->SetIsUnderPlayer(false);
 				}
+			}
+			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::CAN_LEFT);
+			m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_RIGHT);
+		}
+		else if (i == LINE_TYPE_RIGHT)
+		{
+			if (m_Lines[LINE_TYPE_LEFT])
+			{
+				if (CLine* pUnder = *m_Lines[LINE_TYPE_LEFT])
+				{
+					pUnder->SetIsUnderPlayer(false);
+				}
+			}
+			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::CAN_RIGHT);
+			m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_LEFT);
+		}
+
+		break;
+	}
+
+	if (bRevivalLeft)
+	{
+		if (m_Lines[LINE_TYPE_LEFT])
+		{
+			if (CLine* pUnder = *m_Lines[LINE_TYPE_LEFT])
+			{
+				pUnder->SetIsUnderPlayer(false);
 			}
 		}
 	}
 
-	if (m_Lines[LINE_TYPE_RIGHT] != nullptr && !bLeftAndRight)
+	if (bRevivalRight)
 	{
-		CLine* pLine = *m_Lines[LINE_TYPE_RIGHT];
-		if (pLine != nullptr)
+		if (m_Lines[LINE_TYPE_RIGHT])
 		{
-			if (!pLine->GetIsUnderPlayer())
+			if (CLine* pUnder = *m_Lines[LINE_TYPE_RIGHT])
 			{
-				D3DXVECTOR3 currPos = GetPos();
-				Collision::LineSegment2D segmentPlayer{ { m_PrevPos.x, m_PrevPos.y }, { currPos.x, currPos.y } };
-				Collision::LineSegment2D segmentLine = pLine->GetLineSegment2D();
-				bool isCollision = Collision::IsSegmentsCollide(segmentPlayer, segmentLine);
-				if (isCollision)
-				{ // è’ìÀ
-					// è’ìÀÇµÇΩ
-					m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
-
-					//if (m_PrevPos != currPos)
-					D3DXVECTOR2 pos = Collision::GetCrossPoint(segmentPlayer, segmentLine);
-
-					D3DXVECTOR3 move = GetMove();
-					move.x = 0.0f;
-					SetMove(move);
-					SetPos({ pos.x, pos.y, 0.0f });
-
-					pLine->SetIsUnderPlayer(true);
-
-					if (CLine* pUnder = *m_Lines[LINE_TYPE_LEFT])
-					{
-						pUnder->SetIsUnderPlayer(false);
-					}
-				}
+				pUnder->SetIsUnderPlayer(false);
 			}
 		}
 	}
