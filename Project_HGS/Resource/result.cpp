@@ -18,6 +18,7 @@
 #include "object_3D.h"
 #include "texture_manager.h"
 #include <bg.h>
+#include <timernumber.h>
 
 //============================================================================
 // コンストラクタ
@@ -49,8 +50,10 @@ HRESULT CResult::Init()
 	// BGMをかける
 	//CSound::GetInstance()->Play(CSound::LABEL::TEST);
 
-	//背景生成
+	// 背景生成
 	CBg* pBg{ CBg::Create() };
+
+	// ゲームの結果に応じて条件分け
 	if (CScene::GetMode() == MODE::RESULT_GAMECLEAR)
 	{
 		pBg->BindTex(CTexture_Manager::TYPE::RESULT_GAMECLEAR);
@@ -58,8 +61,13 @@ HRESULT CResult::Init()
 	else if (CScene::GetMode() == MODE::RESULT_GAMEOVER)
 	{
 		pBg->BindTex(CTexture_Manager::TYPE::RESULT_GAMEOVER);
+
+		// タイマー表示生成
+		for (int nCnt = 0; nCnt < 2; nCnt++)
+		{
+			CTimerNumber::Create(nCnt, 0);
+		}
 	}
-	
 
 	return hr;
 }
@@ -69,6 +77,9 @@ HRESULT CResult::Init()
 //============================================================================
 void CResult::Uninit()
 {
+	// タイマーリセット
+	CManager::GetTimer()->Reset();
+
 	// 基底クラスの終了処理
 	CScene::Uninit();
 }

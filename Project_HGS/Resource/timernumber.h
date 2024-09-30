@@ -28,6 +28,7 @@ public:
 	void Update() override;// XVˆ—
 	void Draw() override;// •`‰æˆ—
 	static CTimerNumber* Create(int nIdx);// ¶¬ˆ—
+	static CTimerNumber* Create(int nIdx, int nNum);	// ¶¬ˆ—Alt
 
 private:
 

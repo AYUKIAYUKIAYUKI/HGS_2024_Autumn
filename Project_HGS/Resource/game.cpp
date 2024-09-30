@@ -62,7 +62,7 @@ HRESULT CGame::Init()
 	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
 		CTimerNumber::Create(nCnt);
-	}	
+	}
 	
 	// 全てのサウンドを停止
 	//CSound::GetInstance()->Stop();
@@ -80,9 +80,6 @@ void CGame::Uninit()
 {
 	// 邪魔物マネージャーの破棄
 	CObstacle_Manager::GetInstance()->Release();
-
-	// タイマーリセット
-	CManager::GetTimer()->Reset();
 
 	// 基底クラスの終了処理
 	CScene::Uninit();
@@ -103,7 +100,7 @@ void CGame::Update()
 	// リザルト画面へ
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
-		CFade::SetFade(CScene::MODE::RESULT_GAMECLEAR);
+		CFade::SetFade(CScene::MODE::RESULT_GAMEOVER);
 	}
 #endif // _DEBUG
 

@@ -124,6 +124,30 @@ CTimerNumber* CTimerNumber::Create(int nIdx)
 }
 
 //============================================================================
+// 生成処理Alt
+//============================================================================
+CTimerNumber* CTimerNumber::Create(int nIdx, int nNum)
+{
+	nNum = nNum;	// 警告回避用無駄処理
+
+	// メモリを動的確保
+	CTimerNumber* pTimeNumber = new CTimerNumber();
+
+	//パラメータ設定
+	pTimeNumber->SetIdx(nIdx);// ID
+	pTimeNumber->SetSize(CREATE_SIZE * 2.5f);// サイズ
+
+	pTimeNumber->SetPos({ (SCREEN_WIDTH * 0.75f) - (nIdx * 250.0f), (SCREEN_HEIGHT * 0.5f), 0.0f });
+
+	pTimeNumber->SetTexWidth(10.0f);// 横のテクスチャ分割数
+
+	//初期化処理
+	pTimeNumber->Init();
+
+	return nullptr;
+}
+
+//============================================================================
 // 座標設定
 //============================================================================
 void CTimerNumber::SetTimerNumberPos(D3DXVECTOR3 pos)
