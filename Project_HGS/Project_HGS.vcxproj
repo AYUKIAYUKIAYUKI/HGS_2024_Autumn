@@ -25,6 +25,7 @@
     <ClCompile Include="Resource\game.cpp" />
     <ClCompile Include="resource\input.cpp" />
     <ClCompile Include="resource\light.cpp" />
+    <ClCompile Include="Resource\line.cpp" />
     <ClCompile Include="resource\main.cpp" />
     <ClCompile Include="resource\manager.cpp" />
     <ClCompile Include="Resource\model_X_manager.cpp" />
@@ -55,6 +56,7 @@
     <ClInclude Include="Resource\game.h" />
     <ClInclude Include="resource\input.h" />
     <ClInclude Include="resource\light.h" />
+    <ClInclude Include="Resource\line.h" />
     <ClInclude Include="resource\main.h" />
     <ClInclude Include="resource\manager.h" />
     <ClInclude Include="Resource\model_X_manager.h" />
