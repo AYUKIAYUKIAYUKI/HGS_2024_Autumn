@@ -336,9 +336,9 @@ void CPlayer::Update()
 					}
 
 					m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP);
-					m_BuzzPoint = { pos.x, pos.y + 10.0f, 0.0f };
+					m_BuzzPoint = { pos.x, pos.y + 10.0f * 2, 0.0f };
 
-					m_BuzzMove.y = -10.0f / 20;
+					m_BuzzMove.y = -5.0f;
 
 					bTopAndUnder = true;
 				}
@@ -377,9 +377,9 @@ void CPlayer::Update()
 					}
 
 					m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN);
-					m_BuzzPoint = { pos.x, pos.y - 10.0f, 0.0f };
+					m_BuzzPoint = { pos.x, pos.y - 10.0f * 2, 0.0f };
 
-					m_BuzzMove.y = 10.0f / 20;
+					m_BuzzMove.y = 5.0f;
 				}
 			}
 		}
@@ -475,33 +475,49 @@ void CPlayer::Update()
 		}
 	}
 
-	//if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT))
-	//{
-	//	if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN))
-	//	{
-	//		if (fabsf(m_BuzzPoint.y - GetPos().y) >= 20.0f / m_nBuzzCounter)
-	//		{
-	//			m_BuzzPoint = GetPos();
-	//			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN);
-	//			m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP);
-	//			m_nBuzzCounter++;
+	if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT))
+	{
+		if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN))
+		{
+			float a = GetPos().y;
+			float b = fabsf(GetPos().y - m_BuzzPoint.y);
+			if (fabsf(GetPos().y - m_BuzzPoint.y) >= (10.0f / (m_nBuzzCounter + 1) * 3))
+			{
+				m_BuzzPoint = GetPos();
+				m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN);
+				m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP);
+				m_nBuzzCounter++;
 
-	//			m_BuzzMove.y = -10.0f / 20 / m_nBuzzCounter;
-	//		}
-	//	}
-	//	else if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP))
-	//	{
-	//		if (fabsf(m_BuzzPoint.y - GetPos().y) >= 20.0f / m_nBuzzCounter)
-	//		{
-	//			m_BuzzPoint = GetPos();
-	//			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP);
-	//			m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN);
-	//			m_nBuzzCounter++;
+				m_BuzzMove.y = -5.0f / m_nBuzzCounter;
+			}
+		}
+		else if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP))
+		{
+			if (fabsf(GetPos().y - m_BuzzPoint.y) >= (10.0f / (m_nBuzzCounter + 1) * 3))
+			{
+				m_BuzzPoint = GetPos();
+				m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP);
+				m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN);
+				m_nBuzzCounter++;
 
-	//			m_BuzzMove.y = 10.0f / 20 / m_nBuzzCounter;
-	//		}
-	//	}
-	//}
+				m_BuzzMove.y = 5.0f / m_nBuzzCounter;
+			}
+		}
+
+		if (m_nBuzzCounter >= 10)
+		{
+			m_BuzzMove = { 0.0f, 0.0f, 0.0f };
+			D3DXVECTOR3 pos = GetPos();
+			pos.y = m_TargetPos.y;
+			SetPos(pos);
+		}
+	}
+	else
+	{
+		m_BuzzMove = { 0.0f, 0.0f, 0.0f };
+	}
+
+	SetPos(GetPos() + m_BuzzMove);
 
 	//// êeÉNÉâÉXÇÃèàóù
 	//CCharacter::Update();
