@@ -138,9 +138,6 @@ void CPlayer::Uninit()
 //============================================================================
 void CPlayer::Update()
 {
-	CSound::GetInstance()->Play(CSound::LABEL::SE_PLAYERMOVE);	//同時押しの時用SE
-	bool bIsMove = false;
-
 	{
 		D3DXVECTOR3 pos = GetPos();
 		m_PrevPos = pos;
@@ -212,6 +209,8 @@ void CPlayer::Update()
 
 			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
 			//m_bWasReleaseAll = false;
+
+			CSound::GetInstance()->Play(CSound::LABEL::SE_PLAYERMOVE);	//同時押しの時用SE
 		}
 		else if (bPressLeft && !bPressRight/* && m_nCntPressL >= GRACE_FRAME*/ && !m_bWasPressR)
 		{ // 左
@@ -270,6 +269,20 @@ void CPlayer::Update()
 
 			SetMove(move);
 		}
+	}
+
+	bool bIsMove = false;
+	{
+		D3DXVECTOR3 move = GetMove();
+		if (fabsf(move.x) >= 0.1f || fabsf(move.y) >= 0.1f)
+		{
+			bIsMove = true;
+		}
+	}
+
+	if (bIsMove)
+	{
+		CTrajectory::Create(GetPos(), GetSize());
 	}
 
 	// 親クラスの処理
