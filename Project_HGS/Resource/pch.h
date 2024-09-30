@@ -12,6 +12,8 @@
 //****************************************************
 #include <stdio.h>
 #include <assert.h>
+#define _WIN32_DCOM
+#define NOMINMAX
 #include <windows.h>	// Windowsアプリケーション動作用
 
 // DirectX9
