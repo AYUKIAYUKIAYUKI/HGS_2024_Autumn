@@ -36,6 +36,14 @@
     <ClCompile Include="resource\object_3D.cpp" />
     <ClCompile Include="Resource\object_billboard.cpp" />
     <ClCompile Include="resource\object_X.cpp" />
+    <ClCompile Include="Resource\obstacle.cpp" />
+    <ClCompile Include="Resource\obstacle_long.cpp" />
+    <ClCompile Include="Resource\obstacle_manager.cpp" />
+    <ClCompile Include="Resource\obstacle_normal.cpp" />
+    <ClCompile Include="Resource\obstacle_speedy.cpp" />
+    <ClCompile Include="Resource\obstacle_turn.cpp" />
+    <ClCompile Include="Resource\obstacle_twist.cpp" />
+    <ClCompile Include="Resource\obstacle_wave.cpp" />
     <ClCompile Include="resource\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -71,6 +79,14 @@
     <ClInclude Include="resource\object_3D.h" />
     <ClInclude Include="Resource\object_billboard.h" />
     <ClInclude Include="resource\object_X.h" />
+    <ClInclude Include="Resource\obstacle.h" />
+    <ClInclude Include="Resource\obstacle_long.h" />
+    <ClInclude Include="Resource\obstacle_manager.h" />
+    <ClInclude Include="Resource\obstacle_normal.h" />
+    <ClInclude Include="Resource\obstacle_speedy.h" />
+    <ClInclude Include="Resource\obstacle_turn.h" />
+    <ClInclude Include="Resource\obstacle_twist.h" />
+    <ClInclude Include="Resource\obstacle_wave.h" />
     <ClInclude Include="resource\pch.h" />
     <ClInclude Include="Resource\player.h" />
     <ClInclude Include="resource\renderer.h" />
