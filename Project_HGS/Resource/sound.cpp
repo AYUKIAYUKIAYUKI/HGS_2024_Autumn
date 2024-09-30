@@ -309,6 +309,11 @@ CSound::CSound()
 
 	// ÉTÉEÉìÉhèÓïÒ
 	m_aSoundInfo[0] = { "Data\\BGM\\test.wav", -1, 1.0f };
+	m_aSoundInfo[1] = { "Data\\BGM\\bgm_01.wav", -1, 1.0f };
+	m_aSoundInfo[2] = { "Data\\BGM\\bgm_02.wav", -1, 1.0f };
+	m_aSoundInfo[3] = { "Data\\BGM\\bgm_03.wav", -1, 1.0f };
+	m_aSoundInfo[4] = { "Data\\SE\\click.wav", 0, 1.0f };
+	m_aSoundInfo[5] = { "Data\\SE\\player_move.wav", 0, 1.0f };
 }
 
 //=============================================================================

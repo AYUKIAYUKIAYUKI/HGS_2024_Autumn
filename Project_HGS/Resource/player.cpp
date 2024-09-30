@@ -11,7 +11,7 @@
 #include "player.h"
 #include "manager.h"
 #include "trajectory.h"
-
+#include "sound.h"
 //===================================================
 // –³–¼–¼‘O‹óŠÔ
 //===================================================
@@ -138,6 +138,7 @@ void CPlayer::Uninit()
 //============================================================================
 void CPlayer::Update()
 {
+	CSound::GetInstance()->Play(CSound::LABEL::SE_PLAYERMOVE);	//“¯Žž‰Ÿ‚µ‚ÌŽž—pSE
 	bool bIsMove = false;
 
 	{

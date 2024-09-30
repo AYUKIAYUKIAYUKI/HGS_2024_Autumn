@@ -21,7 +21,7 @@
 #include <bg.h>
 #include <logo.h>
 #include <push.h>
-
+#include "sound.h"
 //============================================================================
 // コンストラクタ
 //============================================================================
@@ -59,7 +59,7 @@ HRESULT CTitle::Init()
 	//CSound::GetInstance()->Stop();
 
 	// BGMをかける
-	//CSound::GetInstance()->Play(CSound::LABEL::TEST);
+	CSound::GetInstance()->Play(CSound::LABEL::BGM_01);
 
 	return hr;
 }
@@ -69,6 +69,7 @@ HRESULT CTitle::Init()
 //============================================================================
 void CTitle::Uninit()
 {
+	CSound::GetInstance()->Stop();
 	// 基底クラスの終了処理
 	CScene::Uninit();
 }
@@ -85,7 +86,9 @@ void CTitle::Update()
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN)
 		|| CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START))
 	{
+		CSound::GetInstance()->Play(CSound::LABEL::SE_CLICK);
 		CFade::SetFade(CScene::MODE::TUTORIAL);
+		
 	}
 }
 

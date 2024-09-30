@@ -128,9 +128,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// Å‰‚ÌƒV[ƒ“Ý’è
 	SetScene(CScene::MODE::TITLE);
 
-	// BGM‚ð‚©‚¯‚é
-	CSound::GetInstance()->Play(CSound::LABEL::TEST);
-
 	return S_OK;
 }
 
