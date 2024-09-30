@@ -3,3 +3,5 @@ sea.png
 number.png
 bg.png
 Tutorial.png
+result_gameclear.png
+result_gameover.png
