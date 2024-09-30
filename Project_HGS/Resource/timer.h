@@ -27,6 +27,7 @@ public:
 	void Update();	// 更新処理
 
 	int GetTime() { return m_nTimer; }	//タイマーの取得
+	int GetDigit() { return m_nDigit; }	//タイマーの桁数
 
 private:
 
