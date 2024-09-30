@@ -21,6 +21,11 @@ public:
 	enum class LABEL
 	{
 		TEST = 0,	// テスト
+		BGM_01,		//タイトルBGM
+		BGM_02,		//ゲームBGM
+		BGM_03,		//リザルトBGM
+		SE_CLICK,	//クリック音
+		SE_PLAYERMOVE,//プレイヤー移動音
 		MAX,
 	};
 
