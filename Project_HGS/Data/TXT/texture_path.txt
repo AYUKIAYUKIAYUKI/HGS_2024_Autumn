@@ -1,2 +1,3 @@
 test.jpg
 sea.png
+number.png
