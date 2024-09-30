@@ -105,7 +105,7 @@ void CCamera::SetCamera()
 	// 画面バッファクリア
 	pDev->Clear(0, nullptr,
 		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-		D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+		D3DCOLOR_RGBA(255, 255, 255, 255), 1.0f, 0);
 
 	// プロジェクション行列を計算
 	CalcMtxProjection();

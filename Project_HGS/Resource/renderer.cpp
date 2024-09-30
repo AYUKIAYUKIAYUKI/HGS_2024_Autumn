@@ -183,10 +183,12 @@ void CRenderer::Update()
 //============================================================================
 void CRenderer::Draw()
 {
-	//// 画面バッファクリア
-	//m_pD3DDevice->Clear(0, nullptr,
-	//	(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-	//	D3DCOLOR_RGBA(0, 0, 0, 255), 1.0f, 0);
+#if 0
+	// 画面バッファクリア
+	m_pD3DDevice->Clear(0, nullptr,
+		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+		D3DCOLOR_RGBA(255, 255, 255, 255), 1.0f, 0);
+#endif
 
 	// 疑似スクリーンのテクスチャ内へ描画開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
@@ -237,7 +239,7 @@ void CRenderer::PrintDebug()
 	}
 
 	//テキストの描画
-	m_pFont->DrawText(NULL, m_debugStr.c_str(), -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	m_pFont->DrawText(NULL, m_debugStr.c_str(), -1, &rect, DT_LEFT, D3DCOLOR_RGBA(0, 0, 0, 255));
 }
 
 //============================================================================
