@@ -12,6 +12,9 @@
 #include "manager.h"
 #include "trajectory.h"
 #include "sound.h"
+
+#include "fade.h"
+
 //===================================================
 // –³–¼–¼‘O‹óŠÔ
 //===================================================
@@ -139,6 +142,11 @@ void CPlayer::Uninit()
 //============================================================================
 void CPlayer::Update()
 {
+	if (CFade::GetInstance()->GetNextMode() == CScene::MODE::RESULT_GAMEOVER)
+	{
+		return;
+	}
+
 	{
 		D3DXVECTOR3 pos = GetPos();
 		m_PrevPos = pos;
