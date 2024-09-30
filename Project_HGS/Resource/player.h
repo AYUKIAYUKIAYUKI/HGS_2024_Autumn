@@ -18,8 +18,8 @@
 class CPlayer : public CCharacter
 {
 public:
-	CPlayer(int nPriority = static_cast<int>(LAYER::NONE));	// コンストラクタ
-	~CPlayer() override = default;							// デストラクタ
+	CPlayer(int nPriority = static_cast<int>(LAYER::MIDDLE));	// コンストラクタ
+	~CPlayer() override = default;								// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
@@ -29,13 +29,27 @@ public:
 	void SetPrevPos(const D3DXVECTOR3& inPos) { m_PrevPos = inPos; }
 	const D3DXVECTOR3& GetPrevPos() const { return m_PrevPos; }
 
-	static CPlayer* Create(const D3DXVECTOR3& inPos, const D3DXVECTOR3& inSize);	// 生成
+	static CPlayer* Create(const D3DXVECTOR3& inPos, const D3DXVECTOR3& inSize, const D3DXCOLOR& inCol);	// 生成
+
+	static constexpr float MARGIN_WIDTH = 300.0f;							// 余幅 (幅)
+	static constexpr float MARGIN_HEIGHT = 200.0f;							// 余幅 (高さ)
+	static constexpr float LINE_WIDTH = SCREEN_WIDTH - MARGIN_WIDTH;	// 線の幅
+	static constexpr float LINE_HEIGHT = 5.0f;							// 線の高さ
 
 private:
 	enum class PLAYER_FLAG : BYTE
 	{
 		NONE = 0u,
 		CAN_INPUT = 1 << 0,
+	};
+
+	enum LINE_TYPE
+	{
+		LINE_TYPE_TOP = 0,
+		LINE_TYPE_UNDER,
+		LINE_TYPE_LEFT,
+		LINE_TYPE_RIGHT,
+		MAX
 	};
 
 	CPlayer(const CPlayer&) = delete;

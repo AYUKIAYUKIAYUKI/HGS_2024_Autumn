@@ -24,11 +24,7 @@ namespace /* anonymous */
 	//---------------------------------------------------
 	// 定数
 	//---------------------------------------------------
-	constexpr float MOVE_SPEED = 50.0f;									// プレイヤーの移動速度
-	constexpr float MARGIN_WIDTH = 300.0f;								// 余幅 (幅)
-	constexpr float MARGIN_HEIGHT = 250.0f;								// 余幅 (高さ)
-	constexpr float LINE_WIDTH = SCREEN_WIDTH - MARGIN_WIDTH * 2.0f;	// 線の幅
-	constexpr float LINE_HEIGHT = 5.0f;									// 線の高さ
+	constexpr float MOVE_SPEED = 10.0f;	// プレイヤーの移動速度
 
 } // namespace /* anonymous */
 
@@ -38,7 +34,7 @@ namespace /* anonymous */
 CPlayer::CPlayer(int nPriority)
 	: CCharacter{ nPriority }
 	, m_PrevPos{ 0.0f, 0.0f, 0.0f }
-	, m_PlayerFlag{ 0u }
+	, m_PlayerFlag{ 0x01 }
 {
 	// DO_NOTHING
 }
@@ -57,12 +53,14 @@ HRESULT CPlayer::Init()
 
 	// 線の生成
 	{ // 上の線
-		float fHeight = SCREEN_HEIGHT - MARGIN_HEIGHT;
+		float fHeight = MARGIN_HEIGHT;
 		CLine* pLine = CLine::Create(
 			{ SCREEN_WIDTH * 0.5f, MARGIN_HEIGHT, 0.0f }, 
 			{ LINE_WIDTH, LINE_HEIGHT, 0.0f },
 			{ MARGIN_WIDTH, fHeight },
-			{ SCREEN_WIDTH - MARGIN_WIDTH, fHeight });
+			{ SCREEN_WIDTH - MARGIN_WIDTH, fHeight },
+			{ 0.0f, 0.0f, 0.0f, 1.0f });
+		pLine->SetIsUnderPlayer(true);
 		CLine** ppLine = DBG_NEW CLine*{ pLine };
 		m_Lines.push_back(ppLine);
 	}
@@ -72,7 +70,30 @@ HRESULT CPlayer::Init()
 			{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT - MARGIN_HEIGHT, 0.0f },
 			{ LINE_WIDTH, LINE_HEIGHT, 0.0f },
 			{ MARGIN_WIDTH, fHeight },
-			{ SCREEN_WIDTH - MARGIN_WIDTH, fHeight });
+			{ SCREEN_WIDTH - MARGIN_WIDTH, fHeight },
+			{ 0.0f, 0.0f, 0.0f, 1.0f });
+		CLine** ppLine = DBG_NEW CLine* { pLine };
+		m_Lines.push_back(ppLine);
+	}
+	{ // 当たり判定用左の線
+		float fWidth = MARGIN_WIDTH;
+		CLine* pLine = CLine::Create(
+			{ SCREEN_WIDTH * 0.5f, MARGIN_HEIGHT, 0.0f },
+			{ LINE_WIDTH, LINE_HEIGHT, 0.0f },
+			{ fWidth, MARGIN_HEIGHT },
+			{ fWidth, SCREEN_HEIGHT - MARGIN_HEIGHT },
+			{ 0.0f, 0.0f, 0.0f, 1.0f });
+		CLine** ppLine = DBG_NEW CLine* { pLine };
+		m_Lines.push_back(ppLine);
+	}
+	{ // 当たり判定用右の線
+		float fWidth = SCREEN_WIDTH - MARGIN_WIDTH;
+		CLine* pLine = CLine::Create(
+			{ 0.0f, 0.0f, 0.0f },
+			{ 0.0f, 0.0f, 0.0f },
+			{ fWidth, MARGIN_HEIGHT },
+			{ fWidth, SCREEN_HEIGHT - MARGIN_HEIGHT },
+			{ 0.0f, 0.0f, 0.0f, 1.0f });
 		CLine** ppLine = DBG_NEW CLine* { pLine };
 		m_Lines.push_back(ppLine);
 	}
@@ -101,6 +122,8 @@ void CPlayer::Uninit()
 //============================================================================
 void CPlayer::Update()
 {
+	m_PrevPos = GetPos();
+
 	// 移動量の設定
 	if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT))
 	{ // 移動可能
@@ -122,14 +145,18 @@ void CPlayer::Update()
 			{ // 画面下部
 				move = { 0.0f, -MOVE_SPEED, 0.0f };
 			}
+
+			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
 		}
 		else if (bTriggerLeft)
 		{ // 左
 			move = { -MOVE_SPEED, 0.0f, 0.0f };
+			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
 		}
 		else if (bTriggerRight)
 		{ // 右
 			move = { MOVE_SPEED, 0.0f, 0.0f };
+			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
 		}
 
 		SetMove(move);
@@ -139,28 +166,149 @@ void CPlayer::Update()
 	CCharacter::Update();
 
 	// 当たり判定
-	for (auto& line : m_Lines)
+	bool bTopAndUnder = false;
+	if (m_Lines[LINE_TYPE_TOP] != nullptr)
 	{
-		if (line == nullptr)
+		CLine* pLine = *m_Lines[LINE_TYPE_TOP];
+		if (pLine != nullptr)
 		{
-			continue;
-		}
+			if (!pLine->GetIsUnderPlayer())
+			{
+				D3DXVECTOR3 currPos = GetPos();
+				Collision::LineSegment2D segmentPlayer{ { m_PrevPos.x, m_PrevPos.y }, { currPos.x, currPos.y } };
+				Collision::LineSegment2D segmentLine = pLine->GetLineSegment2D();
+				bool isCollision = Collision::IsSegmentsCollide(segmentPlayer, segmentLine);
+				if (isCollision)
+				{ // 衝突
+					// 衝突した
+					m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
 
-		CLine* pLine = *line;
-		if (pLine == nullptr)
+					//if (m_PrevPos != currPos)
+					D3DXVECTOR2 pos = Collision::GetCrossPoint(segmentPlayer, segmentLine);
+
+					D3DXVECTOR3 move = GetMove();
+					move.y = 0.0f;
+					SetMove(move);
+					SetPos({ pos.x, pos.y, 0.0f });
+
+					pLine->SetIsUnderPlayer(true);
+
+					if (CLine* pUnder = *m_Lines[LINE_TYPE_UNDER])
+					{
+						pUnder->SetIsUnderPlayer(false);
+					}
+
+					bTopAndUnder = true;
+				}
+			}
+		}
+	}
+	
+	if (m_Lines[LINE_TYPE_UNDER] != nullptr && !bTopAndUnder)
+	{
+		CLine* pLine = *m_Lines[LINE_TYPE_UNDER];
+		if (pLine != nullptr)
 		{
-			continue;
+			if (!pLine->GetIsUnderPlayer())
+			{
+				D3DXVECTOR3 currPos = GetPos();
+				Collision::LineSegment2D segmentPlayer{ { m_PrevPos.x, m_PrevPos.y }, { currPos.x, currPos.y } };
+				Collision::LineSegment2D segmentLine = pLine->GetLineSegment2D();
+				bool isCollision = Collision::IsSegmentsCollide(segmentPlayer, segmentLine);
+				if (isCollision)
+				{ // 衝突
+					// 衝突した
+					m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
+
+					//if (m_PrevPos != currPos)
+					D3DXVECTOR2 pos = Collision::GetCrossPoint(segmentPlayer, segmentLine);
+
+					D3DXVECTOR3 move = GetMove();
+					move.y = 0.0f;
+					SetMove(move);
+					SetPos({ pos.x, pos.y, 0.0f });
+
+					pLine->SetIsUnderPlayer(true);
+
+					if (CLine* pUnder = *m_Lines[LINE_TYPE_TOP])
+					{
+						pUnder->SetIsUnderPlayer(false);
+					}
+				}
+			}
 		}
+	}
+	
+	bool bLeftAndRight = false;
+	if (m_Lines[LINE_TYPE_LEFT] != nullptr)
+	{
+		CLine* pLine = *m_Lines[LINE_TYPE_LEFT];
+		if (pLine != nullptr)
+		{
+			if (!pLine->GetIsUnderPlayer())
+			{
+				D3DXVECTOR3 currPos = GetPos();
+				Collision::LineSegment2D segmentPlayer{ { m_PrevPos.x, m_PrevPos.y }, { currPos.x, currPos.y } };
+				Collision::LineSegment2D segmentLine = pLine->GetLineSegment2D();
+				bool isCollision = Collision::IsSegmentsCollide(segmentPlayer, segmentLine);
+				if (isCollision)
+				{ // 衝突
+					// 衝突した
+					m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
 
-		D3DXVECTOR3 currPos = GetPos();
-		Collision::LineSegment2D segment{ { m_PrevPos.x, m_PrevPos.y }, { currPos.x, currPos.y } };
-		bool isCollision = Collision::IsSegmentsCollide(segment, pLine->GetLineSegment2D());
-		if (isCollision)
-		{ // 衝突
-			m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
+					//if (m_PrevPos != currPos)
+					D3DXVECTOR2 pos = Collision::GetCrossPoint(segmentPlayer, segmentLine);
 
-			SetMove({ 0.0f, 0.0f, 0.0f });
-			break;
+					D3DXVECTOR3 move = GetMove();
+					move.x = 0.0f;
+					SetMove(move);
+					SetPos({ pos.x, pos.y, 0.0f });
+
+					pLine->SetIsUnderPlayer(true);
+
+					if (CLine* pUnder = *m_Lines[LINE_TYPE_RIGHT])
+					{
+						pUnder->SetIsUnderPlayer(false);
+					}
+
+					bLeftAndRight = true;
+				}
+			}
+		}
+	}
+
+	if (m_Lines[LINE_TYPE_RIGHT] != nullptr && !bLeftAndRight)
+	{
+		CLine* pLine = *m_Lines[LINE_TYPE_RIGHT];
+		if (pLine != nullptr)
+		{
+			if (!pLine->GetIsUnderPlayer())
+			{
+				D3DXVECTOR3 currPos = GetPos();
+				Collision::LineSegment2D segmentPlayer{ { m_PrevPos.x, m_PrevPos.y }, { currPos.x, currPos.y } };
+				Collision::LineSegment2D segmentLine = pLine->GetLineSegment2D();
+				bool isCollision = Collision::IsSegmentsCollide(segmentPlayer, segmentLine);
+				if (isCollision)
+				{ // 衝突
+					// 衝突した
+					m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
+
+					//if (m_PrevPos != currPos)
+					D3DXVECTOR2 pos = Collision::GetCrossPoint(segmentPlayer, segmentLine);
+
+					D3DXVECTOR3 move = GetMove();
+					move.x = 0.0f;
+					SetMove(move);
+					SetPos({ pos.x, pos.y, 0.0f });
+
+					pLine->SetIsUnderPlayer(true);
+
+					if (CLine* pUnder = *m_Lines[LINE_TYPE_LEFT])
+					{
+						pUnder->SetIsUnderPlayer(false);
+					}
+				}
+			}
 		}
 	}
 }
@@ -177,7 +325,7 @@ void CPlayer::Draw()
 //============================================================================
 // 生成
 //============================================================================
-CPlayer* CPlayer::Create(const D3DXVECTOR3& inPos, const D3DXVECTOR3& inSize)
+CPlayer* CPlayer::Create(const D3DXVECTOR3& inPos, const D3DXVECTOR3& inSize, const D3DXCOLOR& inCol)
 {
 	CPlayer* pPlayer = DBG_NEW CPlayer{};
 
@@ -189,6 +337,7 @@ CPlayer* CPlayer::Create(const D3DXVECTOR3& inPos, const D3DXVECTOR3& inSize)
 
 	pPlayer->SetPos(inPos);
 	pPlayer->SetSize(inSize);
+	pPlayer->SetCol(inCol);
 
 	return pPlayer;
 }
