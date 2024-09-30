@@ -34,7 +34,7 @@ CObstacle_Normal::~CObstacle_Normal()
 //============================================================================
 HRESULT CObstacle_Normal::Init()
 {
-	float fAdder{ 1.0f };
+	float fAdder{ 2.0f };
 
 	// ÉTÉCÉYê›íË
 	SetSize({ 15.0f, 15.0f, 0.0f });

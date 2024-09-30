@@ -20,7 +20,7 @@ CObstacle_Wave::CObstacle_Wave(int nRouteStyle, int nPriority) :
 	m_fCoeffWave{ 0.0f },
 	m_WaveVelocity{ 0.0f, 0.0f, 0.0f }
 {
-	SetCol({ 1.0f, 1.0f, 0.0f, 1.0f });
+	SetCol({ 0.0f, 1.0f, 0.0f, 1.0f });
 }
 
 //============================================================================

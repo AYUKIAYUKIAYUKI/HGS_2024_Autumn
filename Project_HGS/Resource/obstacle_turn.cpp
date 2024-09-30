@@ -63,6 +63,26 @@ HRESULT CObstacle_Turn::Init()
 		m_Velocity = { fAdder, 0.0f, 0.0f, };
 		break;
 
+		// 上
+	case 4:
+		SetPos({ SCREEN_WIDTH * 0.35f, -INITSPAN, 0.0f });
+		m_Velocity = { 0.0f, fAdder, 0.0f, };
+		break;
+	case 5:
+		SetPos({ SCREEN_WIDTH * 0.65f, -INITSPAN, 0.0f });
+		m_Velocity = { 0.0f, fAdder, 0.0f, };
+		break;
+
+		// 下
+	case 6:
+		SetPos({ SCREEN_WIDTH * 0.35f, SCREEN_HEIGHT + INITSPAN, 0.0f });
+		m_Velocity = { 0.0f, -fAdder, 0.0f, };
+		break;
+	case 7:
+		SetPos({ SCREEN_WIDTH * 0.65f, SCREEN_HEIGHT + INITSPAN, 0.0f });
+		m_Velocity = { 0.0f, -fAdder, 0.0f, };
+		break;
+
 	default:
 		assert(false && "移動スタイル指定エラー");
 		break;
