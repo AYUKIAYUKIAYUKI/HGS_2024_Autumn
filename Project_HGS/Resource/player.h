@@ -45,7 +45,8 @@ private:
 		CAN_INPUT = 1 << 0,
 		CAN_LEFT = 1 << 1,
 		CAN_RIGHT = 1 << 2,
-
+		BUZZ_UP = 1 << 3,
+		BUZZ_DOWN = 1 << 4,
 	};
 
 	enum LINE_TYPE
@@ -77,4 +78,8 @@ private:
 	int m_nCntPressR;
 
 	Collision::Circle m_Circle;
+
+	int m_nBuzzCounter;
+
+	D3DXVECTOR3 m_BuzzPoint;
 };

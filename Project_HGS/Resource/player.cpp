@@ -42,6 +42,8 @@ CPlayer::CPlayer(int nPriority)
 	, m_nCntPressL{ 0 }
 	, m_nCntPressR{ 0 }
 	, m_Circle{}
+	, m_nBuzzCounter{ 0 }
+	, m_BuzzPoint{ 0.0f, 0.0f, 0.0f }
 {
 #if 1
 	m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
@@ -171,7 +173,7 @@ void CPlayer::Update()
 
 		if (bPressRight)
 		{
-			m_nCntPressL++;
+			m_nCntPressR++;
 		}
 
 		if (bReleaseR)
@@ -187,7 +189,8 @@ void CPlayer::Update()
 		D3DXVECTOR3 move = GetMove();
 		move.x = 0.0f;
 
-		if (((bPressLeft && bTriggerRight) || (bPressRight && bTriggerLeft))/* && m_bWasReleaseAll*/)
+		if (((bPressLeft && bTriggerRight) || (bPressRight && bTriggerLeft)) && m_bWasReleaseAll &&
+			(m_nCntPressL <= 5 && m_nCntPressR <= 5))
 		{ // ìØéûâüÇµ
 			D3DXVECTOR3 pos = GetPos();
 			if (pos.y <= SCREEN_HEIGHT * 0.5f)
@@ -201,10 +204,12 @@ void CPlayer::Update()
 				//move = { 0.0f, -MOVE_SPEED, 0.0f };
 			}
 
+			m_bWasReleaseAll = false;
+
 			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
 			//m_bWasReleaseAll = false;
 		}
-		else if (bPressLeft && !bPressRight/* && m_nCntPressL >= GRACE_FRAME*/)
+		else if (bPressLeft && !bPressRight/* && m_nCntPressL >= GRACE_FRAME*/ && !m_bWasPressR)
 		{ // ç∂
 			if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::CAN_LEFT))
 			{
@@ -214,7 +219,7 @@ void CPlayer::Update()
 				//m_bWasReleaseAll = false;
 			}
 		}
-		else if (bPressRight && !bPressLeft/* && m_nCntPressR >= GRACE_FRAME*/)
+		else if (bPressRight && !bPressLeft/* && m_nCntPressR >= GRACE_FRAME*/ && !m_bWasPressL)
 		{ // âE
 			if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::CAN_RIGHT))
 			{
@@ -298,6 +303,8 @@ void CPlayer::Update()
 						pUnder->SetIsUnderPlayer(false);
 					}
 
+					m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP);
+
 					bTopAndUnder = true;
 				}
 			}
@@ -333,6 +340,8 @@ void CPlayer::Update()
 					{
 						pUnder->SetIsUnderPlayer(false);
 					}
+
+					m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN);
 				}
 			}
 		}
@@ -426,6 +435,11 @@ void CPlayer::Update()
 				pUnder->SetIsUnderPlayer(false);
 			}
 		}
+	}
+
+	if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN))
+	{
+
 	}
 }
 
