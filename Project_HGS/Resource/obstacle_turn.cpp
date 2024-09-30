@@ -20,7 +20,7 @@ CObstacle_Turn::CObstacle_Turn(int nRouteStyle, int nPriority) :
 	m_nCast{ 0 },
 	m_Reverse{ 0.0f, 0.0f, 0.0f }
 {
-	SetCol({ 0.25f, 1.0f, 1.0f, 1.0f });
+	SetCol({ 0.5f, 1.0f, 1.0f, 1.0f });
 }
 
 //============================================================================
