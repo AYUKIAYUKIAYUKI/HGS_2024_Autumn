@@ -20,7 +20,7 @@ CObstacle_Turn::CObstacle_Turn(int nRouteStyle, int nPriority) :
 	m_nCast{ 0 },
 	m_Reverse{ 0.0f, 0.0f, 0.0f }
 {
-	SetCol({ 0.0f, 1.0f, 1.0f, 1.0f });
+	SetCol({ 0.25f, 1.0f, 1.0f, 1.0f });
 }
 
 //============================================================================
@@ -67,21 +67,21 @@ HRESULT CObstacle_Turn::Init()
 
 		// è„
 	case 4:
-		SetPos({ SCREEN_WIDTH * 0.35f, -INITSPAN, 0.0f });
+		SetPos({ SCREEN_WIDTH * 0.35f, -INITSPAN * 3.0f, 0.0f });
 		m_Velocity = { 0.0f, fAdder, 0.0f, };
 		break;
 	case 5:
-		SetPos({ SCREEN_WIDTH * 0.65f, -INITSPAN, 0.0f });
+		SetPos({ SCREEN_WIDTH * 0.65f, -INITSPAN * 3.0f, 0.0f });
 		m_Velocity = { 0.0f, fAdder, 0.0f, };
 		break;
 
 		// â∫
 	case 6:
-		SetPos({ SCREEN_WIDTH * 0.35f, SCREEN_HEIGHT + INITSPAN, 0.0f });
+		SetPos({ SCREEN_WIDTH * 0.35f, SCREEN_HEIGHT + INITSPAN * 3.0f, 0.0f });
 		m_Velocity = { 0.0f, -fAdder, 0.0f, };
 		break;
 	case 7:
-		SetPos({ SCREEN_WIDTH * 0.65f, SCREEN_HEIGHT + INITSPAN, 0.0f });
+		SetPos({ SCREEN_WIDTH * 0.65f, SCREEN_HEIGHT + INITSPAN * 3.0f, 0.0f });
 		m_Velocity = { 0.0f, -fAdder, 0.0f, };
 		break;
 
