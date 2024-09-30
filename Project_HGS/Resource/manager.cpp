@@ -23,6 +23,7 @@ CLight* CManager::m_pLight = nullptr;				// ライト管理
 CInputKeyboard* CManager::m_pKeyboard = nullptr;	// キーボード管理
 CInputPad* CManager::m_pPad = nullptr;				// パッド管理
 CScene* CManager::m_pScene = nullptr;				// シーン管理
+CTimer* CManager::m_pTimer = nullptr;				// タイマー管理
 
 //============================================================================
 // デフォルトコンストラクタ
