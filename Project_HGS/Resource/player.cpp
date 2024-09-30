@@ -45,6 +45,7 @@ CPlayer::CPlayer(int nPriority)
 	, m_Circle{}
 	, m_nBuzzCounter{ 0 }
 	, m_BuzzPoint{ 0.0f, 0.0f, 0.0f }
+	, m_BuzzMove{ 0.0f, 0.0f, 0.0f }
 {
 #if 1
 	m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
@@ -205,6 +206,10 @@ void CPlayer::Update()
 				//move = { 0.0f, -MOVE_SPEED, 0.0f };
 			}
 
+			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP);
+			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN);
+			m_nBuzzCounter = 0;
+
 			m_bWasReleaseAll = false;
 
 			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
@@ -285,8 +290,10 @@ void CPlayer::Update()
 		CTrajectory::Create(GetPos(), GetSize());
 	}
 
+#if 0
 	// 親クラスの処理
 	CCharacter::Update();
+#endif
 
 	// 当たり判定
 	bool bTopAndUnder = false;
@@ -321,6 +328,9 @@ void CPlayer::Update()
 					}
 
 					m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP);
+					m_BuzzPoint = { pos.x, pos.y + 10.0f, 0.0f };
+
+					m_BuzzMove.y = -10.0f / 20;
 
 					bTopAndUnder = true;
 				}
@@ -359,6 +369,9 @@ void CPlayer::Update()
 					}
 
 					m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN);
+					m_BuzzPoint = { pos.x, pos.y - 10.0f, 0.0f };
+
+					m_BuzzMove.y = 10.0f / 20;
 				}
 			}
 		}
@@ -454,12 +467,36 @@ void CPlayer::Update()
 		}
 	}
 
-	if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN))
+	if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT))
 	{
+		if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN))
+		{
+			if (fabsf(m_BuzzPoint.y - GetPos().y) >= 20.0f / m_nBuzzCounter)
+			{
+				m_BuzzPoint = GetPos();
+				m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN);
+				m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP);
+				m_nBuzzCounter++;
 
+				m_BuzzMove.y = -10.0f / 20 / m_nBuzzCounter;
+			}
+		}
+		else if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP))
+		{
+			if (fabsf(m_BuzzPoint.y - GetPos().y) >= 20.0f / m_nBuzzCounter)
+			{
+				m_BuzzPoint = GetPos();
+				m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP);
+				m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN);
+				m_nBuzzCounter++;
+
+				m_BuzzMove.y = 10.0f / 20 / m_nBuzzCounter;
+			}
+		}
 	}
 
-
+	// 親クラスの処理
+	CCharacter::Update();
 }
 
 //============================================================================

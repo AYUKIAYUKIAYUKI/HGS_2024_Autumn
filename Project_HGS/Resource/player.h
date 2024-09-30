@@ -82,4 +82,5 @@ private:
 	int m_nBuzzCounter;
 
 	D3DXVECTOR3 m_BuzzPoint;
+	D3DXVECTOR3 m_BuzzMove;
 };
