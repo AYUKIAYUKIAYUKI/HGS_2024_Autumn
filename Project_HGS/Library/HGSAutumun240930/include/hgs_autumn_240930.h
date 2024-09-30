@@ -189,7 +189,7 @@ namespace HGSAutumn240930::String
 	{
 		std::ostringstream oss;
 		oss << head;
-		return oss.str() + print(args...);
+		return oss.str() + Print(args...);
 	}
 #pragma endregion
 }

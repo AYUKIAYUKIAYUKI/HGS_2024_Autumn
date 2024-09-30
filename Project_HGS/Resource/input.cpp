@@ -77,7 +77,8 @@ void CInput::Uninit()
 //============================================================================
 CInputKeyboard::CInputKeyboard() :
 	m_aKeyState{},			// プレス情報
-	m_aKeyStateTrigger{}	// トリガー情報
+	m_aKeyStateTrigger{},	// トリガー情報
+	m_aKeyStateRelease{}	// リリース情報
 {
 
 }
@@ -155,6 +156,9 @@ void CInputKeyboard::Update()
 			// キーボードのトリガー情報を保存
 			m_aKeyStateTrigger[i] = (m_aKeyState[i] ^ state_keyboard[i]) & state_keyboard[i];
 
+			// キーボードのリリース情報を保存
+			m_aKeyStateRelease[i] = (m_aKeyState[i] ^ state_keyboard[i]) & ~state_keyboard[i];
+
 			// キーボードのプレス情報を保存
 			m_aKeyState[i] = state_keyboard[i];
 		}
@@ -182,6 +186,14 @@ bool CInputKeyboard::GetTrigger(int nKey)
 	return ((m_aKeyStateTrigger[nKey] & 0x80) != 0) ? true : false;
 }
 
+//============================================================================
+// リリース情報取得
+//============================================================================
+bool CInputKeyboard::GetRelease(int nKey)
+{
+	return ((m_aKeyStateRelease[nKey] & 0x80) != 0) ? true : false;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //============================================================================
@@ -189,7 +201,8 @@ bool CInputKeyboard::GetTrigger(int nKey)
 //============================================================================
 CInputPad::CInputPad() :
 	m_aKeyState{},			// プレス情報
-	m_aKeyStateTrigger{}	// トリガー情報
+	m_aKeyStateTrigger{},	// トリガー情報
+	m_aKeyStateRelease{}	// リリース情報
 {
 
 }
@@ -256,6 +269,11 @@ void CInputPad::Update()
 		m_aKeyStateTrigger.Gamepad.bLeftTrigger = (m_aKeyState.Gamepad.bLeftTrigger ^ state_joypad.Gamepad.bLeftTrigger) & state_joypad.Gamepad.bLeftTrigger;
 		m_aKeyStateTrigger.Gamepad.bRightTrigger = (m_aKeyState.Gamepad.bRightTrigger ^ state_joypad.Gamepad.bRightTrigger) & state_joypad.Gamepad.bRightTrigger;
 
+		// コントローラのリリース情報を保存
+		m_aKeyStateRelease.Gamepad.wButtons = (m_aKeyState.Gamepad.wButtons ^ state_joypad.Gamepad.wButtons) & ~state_joypad.Gamepad.wButtons;
+		m_aKeyStateRelease.Gamepad.bLeftTrigger = (m_aKeyState.Gamepad.bLeftTrigger ^ state_joypad.Gamepad.bLeftTrigger) & ~state_joypad.Gamepad.bLeftTrigger;
+		m_aKeyStateRelease.Gamepad.bRightTrigger = (m_aKeyState.Gamepad.bRightTrigger ^ state_joypad.Gamepad.bRightTrigger) & ~state_joypad.Gamepad.bRightTrigger;
+			
 		// コントローラのプレス情報を保存
 		m_aKeyState = state_joypad;
 	}
@@ -275,6 +293,14 @@ bool CInputPad::GetPress(JOYKEY Key)
 bool CInputPad::GetTrigger(JOYKEY Key)
 {
 	return (m_aKeyStateTrigger.Gamepad.wButtons & (0x01 << static_cast<int>(Key))) ? true : false;
+}
+
+//============================================================================
+// リリース情報取得
+//============================================================================
+bool CInputPad::GetRelease(JOYKEY Key)
+{
+	return (m_aKeyStateRelease.Gamepad.wButtons & (0x01 << static_cast<int>(Key))) ? true : false;
 }
 
 //============================================================================

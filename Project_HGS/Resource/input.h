@@ -52,11 +52,13 @@ public:
 
 	bool GetPress(int nKey);	// プレス情報取得
 	bool GetTrigger(int nKey);	// トリガー情報取得
+	bool GetRelease(int nKey);	// リリース情報取得
 
 private:
 
 	BYTE m_aKeyState[MAX_KEY];			// プレス情報
 	BYTE m_aKeyStateTrigger[MAX_KEY];	// トリガー情報
+	BYTE m_aKeyStateRelease[MAX_KEY];	// リリース情報
 };
 
 //****************************************************
@@ -108,6 +110,7 @@ public:
 
 	bool GetPress(JOYKEY Key);		// プレス情報取得
 	bool GetTrigger(JOYKEY Key);	// トリガー情報取得
+	bool GetRelease(JOYKEY Key);	// リリース情報取得
 	JOYSTICK GetJoyStickL();		// 左スティックの傾き取得
 	JOYSTICK GetJoyStickR();		// 右スティックの傾き取得
 
@@ -117,6 +120,7 @@ private:
 
 	XINPUT_STATE m_aKeyState;			// プレス情報
 	XINPUT_STATE m_aKeyStateTrigger;	// トリガー情報
+	XINPUT_STATE m_aKeyStateRelease;	// リリース情報
 };
 
 #endif // _INPUT_H_
