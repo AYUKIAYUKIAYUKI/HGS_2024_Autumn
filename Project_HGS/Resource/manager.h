@@ -15,6 +15,7 @@
 #include "light.h"
 #include "input.h"
 #include "scene.h"
+#include "timer.h"
 
 //****************************************************
 // マネージャークラス
@@ -35,6 +36,7 @@ public:
 	static CLight* GetLight();					// ライト取得
 	static CInputKeyboard* GetKeyboard();		// キーボード取得
 	static CInputPad* GetPad();					// パッド取得
+	static CTimer* GetTimer();					// タイマー取得
 	static CScene* GetScene();					// シーン取得
 	static void SetScene(CScene::MODE mode);	// シーン設定
 
@@ -45,6 +47,7 @@ private:
 	static CInputKeyboard* m_pKeyboard;	// キーボード管理
 	static CInputPad* m_pPad;			// パッド管理
 	static CScene* m_pScene;			// シーン管理
+	static CTimer* m_pTimer;			// タイマー管理
 };
 
 #endif // _MANAGER_H_
