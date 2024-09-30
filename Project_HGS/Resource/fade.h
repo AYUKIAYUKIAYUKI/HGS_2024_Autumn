@@ -25,6 +25,7 @@ public:
 	void Update();	// 更新処理
 	void Draw();	// 描画処理
 
+	static CScene::MODE GetNextMode();	// モードを取得
 	static void SetFade(CScene::MODE Mode);	// フェード設定
 	static CFade* GetInstance();			// フェードを取得
 

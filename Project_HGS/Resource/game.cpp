@@ -90,11 +90,16 @@ void CGame::Uninit()
 //============================================================================
 void CGame::Update()
 {
-	// 邪魔物マネージャーの更新
-	CObstacle_Manager::GetInstance()->Update();
-
 	// 基底クラスの更新処理
 	CScene::Update();
+
+	if (CFade::GetInstance()->GetNextMode() == CScene::MODE::RESULT_GAMEOVER)
+	{
+		return;
+	}
+
+	// 邪魔物マネージャーの更新
+	CObstacle_Manager::GetInstance()->Update();
 
 #ifdef _DEBUG
 	// リザルト画面へ
