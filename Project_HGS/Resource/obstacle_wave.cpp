@@ -36,6 +36,8 @@ CObstacle_Wave::~CObstacle_Wave()
 //============================================================================
 HRESULT CObstacle_Wave::Init()
 {
+	BindTex(CTexture_Manager::TYPE::TRI);
+
 	float fAdder{ 2.0f };
 
 	// ÉTÉCÉYê›íË

@@ -36,6 +36,8 @@ CObstacle_Turn::~CObstacle_Turn()
 //============================================================================
 HRESULT CObstacle_Turn::Init()
 {
+	BindTex(CTexture_Manager::TYPE::SQUARE);
+
 	float fAdder{ 3.0f };
 
 	// ÉTÉCÉYê›íË
