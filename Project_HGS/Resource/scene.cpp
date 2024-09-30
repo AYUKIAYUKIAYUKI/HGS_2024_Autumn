@@ -21,6 +21,7 @@
 #include "game.h"
 #include "result.h"
 #include "title.h"
+#include "tutorial.h"
 
 // オブジェクト管理用
 #include "object.h"
@@ -114,6 +115,11 @@ CScene* CScene::Create(MODE mode)
 	case CScene::MODE::TITLE:
 		pScene = DBG_NEW CTitle;
 		pScene->m_mode = MODE::TITLE;
+		break;
+
+	case CScene::MODE::TUTORIAL:
+		pScene = DBG_NEW CTutorial;
+		pScene->m_mode = MODE::TUTORIAL;
 		break;
 
 	case CScene::MODE::GAME:

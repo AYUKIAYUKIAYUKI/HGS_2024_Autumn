@@ -2,3 +2,4 @@ test.jpg
 sea.png
 number.png
 bg.png
+Tutorial.png
