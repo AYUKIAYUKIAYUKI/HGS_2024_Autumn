@@ -35,6 +35,13 @@ CPlayer::CPlayer(int nPriority)
 	: CCharacter{ nPriority }
 	, m_PrevPos{ 0.0f, 0.0f, 0.0f }
 	, m_PlayerFlag{ 0x00 }
+	, m_TargetPos{ 0.0f, 0.0f, 0.0f }
+	, m_bWasPressL{ false }
+	, m_bWasPressR{ false }
+	, m_bWasReleaseAll{ false }
+	, m_nCntPressL{ 0 }
+	, m_nCntPressR{ 0 }
+	, m_Circle{}
 {
 #if 1
 	m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
@@ -102,6 +109,8 @@ HRESULT CPlayer::Init()
 		m_Lines.push_back(ppLine);
 	}
 
+	m_Circle.r = 15.0f;
+
 	return S_OK;
 }
 
@@ -126,7 +135,11 @@ void CPlayer::Uninit()
 //============================================================================
 void CPlayer::Update()
 {
-	m_PrevPos = GetPos();
+	{
+		D3DXVECTOR3 pos = GetPos();
+		m_PrevPos = pos;
+		m_Circle.c = { pos.x, pos.y };
+	}
 
 	bool bRevivalLeft = false;
 	bool bRevivalRight = false;
@@ -134,48 +147,120 @@ void CPlayer::Update()
 	// 移動量の設定
 	if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT))
 	{ // 移動可能
-		bool bPressLeft = CManager::GetKeyboard()->GetPress(DIK_LEFT);
-		bool bTriggerLeft = CManager::GetKeyboard()->GetTrigger(DIK_LEFT);
-		bool bPressRight = CManager::GetKeyboard()->GetPress(DIK_RIGHT);
-		bool bTriggerRight = CManager::GetKeyboard()->GetTrigger(DIK_RIGHT);
+		CInputKeyboard* keyboard = CManager::GetKeyboard();
+		CInputPad* pad = CManager::GetPad();
+
+		static int GRACE_FRAME = 2;
+
+		bool bPressLeft = keyboard->GetPress(DIK_LEFT) || pad->GetPress(CInputPad::JOYKEY::L);
+		bool bTriggerLeft = keyboard->GetTrigger(DIK_LEFT) || pad->GetTrigger(CInputPad::JOYKEY::L);
+		bool bPressRight = keyboard->GetPress(DIK_RIGHT) || pad->GetPress(CInputPad::JOYKEY::R);
+		bool bTriggerRight = keyboard->GetTrigger(DIK_RIGHT) || pad->GetTrigger(CInputPad::JOYKEY::R);
+		bool bReleaseL = keyboard->GetRelease(DIK_LEFT) || pad->GetRelease(CInputPad::JOYKEY::L);
+		bool bReleaseR = keyboard->GetRelease(DIK_RIGHT) || pad->GetRelease(CInputPad::JOYKEY::R);
+
+		if (bPressLeft)
+		{
+			m_nCntPressL++;
+		}
+		
+		if (bReleaseL)
+		{
+			m_nCntPressL = 0;
+		}
+
+		if (bPressRight)
+		{
+			m_nCntPressL++;
+		}
+
+		if (bReleaseR)
+		{
+			m_nCntPressR = 0;
+		}
+
+		//if (m_nCntPressL >= GRACE_FRAME || m_nCntPressR >= GRACE_FRAME)
+		//{
+		//	//m_bWasReleaseAll = false;
+		//}
 
 		D3DXVECTOR3 move = GetMove();
 		move.x = 0.0f;
 
-		if ((bPressLeft && bTriggerRight) || (bPressRight && bTriggerLeft))
+		if (((bPressLeft && bTriggerRight) || (bPressRight && bTriggerLeft))/* && m_bWasReleaseAll*/)
 		{ // 同時押し
 			D3DXVECTOR3 pos = GetPos();
 			if (pos.y <= SCREEN_HEIGHT * 0.5f)
 			{ // 画面上部
-				move = { 0.0f, MOVE_SPEED, 0.0f };
+				m_TargetPos = { pos.x, SCREEN_HEIGHT - MARGIN_HEIGHT - 1.0f, pos.z };
+				//move = { 0.0f, MOVE_SPEED, 0.0f };
 			}
 			else
 			{ // 画面下部
-				move = { 0.0f, -MOVE_SPEED, 0.0f };
+				m_TargetPos = { pos.x, MARGIN_HEIGHT, pos.z };
+				//move = { 0.0f, -MOVE_SPEED, 0.0f };
 			}
 
 			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT);
+			//m_bWasReleaseAll = false;
 		}
-		else if (bPressLeft && !bPressRight)
+		else if (bPressLeft && !bPressRight/* && m_nCntPressL >= GRACE_FRAME*/)
 		{ // 左
 			if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::CAN_LEFT))
 			{
 				move = { -MOVE_SPEED, 0.0f, 0.0f };
 				m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_RIGHT);
 				bRevivalRight = true;
+				//m_bWasReleaseAll = false;
 			}
 		}
-		else if (bPressRight && !bPressLeft)
+		else if (bPressRight && !bPressLeft/* && m_nCntPressR >= GRACE_FRAME*/)
 		{ // 右
 			if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::CAN_RIGHT))
 			{
 				move = { MOVE_SPEED, 0.0f, 0.0f };
 				m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::CAN_LEFT);
 				bRevivalLeft = true;
+				//m_bWasReleaseAll = false;
 			}
+		}
+		else if (!bPressLeft && !bPressRight)
+		{
+			m_bWasReleaseAll = true;
 		}
 
 		SetMove(move);
+
+		m_bWasPressL = bPressLeft;
+		m_bWasPressR = bPressRight;
+	}
+	else
+	{
+		D3DXVECTOR3 distance = (m_TargetPos - GetPos());
+		D3DXVECTOR2 distanceVec2 = { distance.x, distance.y };
+		float fLength = fabsf(D3DXVec2Length(&distanceVec2));
+		bool bDone = fLength <= 1.0f;
+		if (bDone)
+		{
+			//SetPos(m_TargetPos);
+		}
+
+		if (!bRevivalRight && !bRevivalLeft && !bDone)
+		{
+			// 移動量の更新 (減衰)
+			D3DXVECTOR3 move = distance * 0.1f;
+			static float MIN_MOVE = 5.0f;
+			if (move.y <= 0.0f && move.y >= -MIN_MOVE)
+			{
+				move.y = -MIN_MOVE;
+			}
+			else if (move.y >= 0.0f && move.y <= MIN_MOVE)
+			{
+				move.y = MIN_MOVE;
+			}
+
+			SetMove(move);
+		}
 	}
 
 	// 親クラスの処理
