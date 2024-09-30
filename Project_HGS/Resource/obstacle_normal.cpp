@@ -34,6 +34,8 @@ CObstacle_Normal::~CObstacle_Normal()
 //============================================================================
 HRESULT CObstacle_Normal::Init()
 {
+	BindTex(CTexture_Manager::TYPE::SPHERE);
+
 	float fAdder{ 2.0f };
 
 	// ÉTÉCÉYê›íË

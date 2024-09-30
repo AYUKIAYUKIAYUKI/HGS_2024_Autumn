@@ -34,6 +34,8 @@ CObstacle_Speedy::~CObstacle_Speedy()
 //============================================================================
 HRESULT CObstacle_Speedy::Init()
 {
+	BindTex(CTexture_Manager::TYPE::SPHERE);
+
 	float fAdder{ 5.0f };
 
 	// ÉTÉCÉYê›íË
