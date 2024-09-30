@@ -1,0 +1,38 @@
+//============================================================================
+// 
+// タイトルロゴ、ヘッダファイル [logo.h]
+// Author : 久保市篤武
+// 
+//============================================================================
+
+#ifndef _LOGO_H_
+#define _LOGO_H_	// 二重インクルード防止
+
+//****************************************************
+// インクルードファイル
+//****************************************************
+#include "object_2D.h"// 2Dオブジェクト管理ヘッダーファイル
+
+//****************************************************
+// タイマークラス
+//****************************************************
+class CLogo : public CObject_2D
+{
+public:
+
+	CLogo(int nPriority = static_cast<int>(LAYER::UI));// コンストラクタ
+	~CLogo() override;// デストラクタ
+
+	HRESULT Init() override;// 初期設定
+	void Uninit() override;// 終了処理
+	void Update() override;// 更新処理
+	void Draw() override;// 描画処理
+	static CLogo* Create();// 生成処理
+
+private:
+	static inline const D3DXVECTOR3 CREATE_SIZE = { 500.0f, 250.0f, 0.0f };// 生成サイズ
+	static inline const D3DXVECTOR3 CREATE_POS = { SCREEN_WIDTH * 0.5f, 250.0f, 0.0f };// 生成位置
+};
+
+#endif // _LOGO_H_
+

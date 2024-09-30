@@ -27,6 +27,8 @@ public:
 		EXPLANATION,	// 操作説明
 		RESULT_GAMECLEAR,//リザルト画面（ゲームクリア）
 		RESULT_GAMEOVER,//リザルト画面（ゲームオーバー）
+		LOGO,// タイトルロゴ
+		PUSH,// プッシュ
 		MAX,
 	};
 

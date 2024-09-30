@@ -23,6 +23,7 @@ public:
 	enum class TYPE
 	{
 		NONE = 0,		// –³‚µ
+		PLAYER,			// ƒvƒŒƒCƒ„[
 		MAX,
 	};
 

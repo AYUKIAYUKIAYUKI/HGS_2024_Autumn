@@ -28,6 +28,7 @@
     <ClCompile Include="resource\input.cpp" />
     <ClCompile Include="resource\light.cpp" />
     <ClCompile Include="Resource\line.cpp" />
+    <ClCompile Include="Resource\logo.cpp" />
     <ClCompile Include="resource\main.cpp" />
     <ClCompile Include="resource\manager.cpp" />
     <ClCompile Include="Resource\model_X_manager.cpp" />
@@ -49,6 +50,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Resource\player.cpp" />
+    <ClCompile Include="Resource\push.cpp" />
     <ClCompile Include="resource\renderer.cpp" />
     <ClCompile Include="Resource\result.cpp" />
     <ClCompile Include="Resource\scene.cpp" />
@@ -71,6 +73,7 @@
     <ClInclude Include="resource\input.h" />
     <ClInclude Include="resource\light.h" />
     <ClInclude Include="Resource\line.h" />
+    <ClInclude Include="Resource\logo.h" />
     <ClInclude Include="resource\main.h" />
     <ClInclude Include="resource\manager.h" />
     <ClInclude Include="Resource\model_X_manager.h" />
@@ -89,6 +92,7 @@
     <ClInclude Include="Resource\obstacle_wave.h" />
     <ClInclude Include="resource\pch.h" />
     <ClInclude Include="Resource\player.h" />
+    <ClInclude Include="Resource\push.h" />
     <ClInclude Include="resource\renderer.h" />
     <ClInclude Include="Resource\result.h" />
     <ClInclude Include="Resource\scene.h" />

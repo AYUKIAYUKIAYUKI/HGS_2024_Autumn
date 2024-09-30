@@ -72,7 +72,8 @@ void CTutorial::Update()
 	CScene::Update();
 
 	// ƒQ[ƒ€‰æ–Ê‚Ö
-	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
+	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN)
+		|| CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START))
 	{
 		CFade::SetFade(CScene::MODE::GAME);
 	}

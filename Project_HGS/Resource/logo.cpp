@@ -1,102 +1,87 @@
 //============================================================================
 // 
-// タイトル [title.cpp]
-// Author : 福田歩希
+// タイトルロゴ [logo.cpp]
+// Author : 久保市篤武
 // 
 //============================================================================
 
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "title.h"
+#include "logo.h"// タイトルロゴヘッダーファイル
 
-// インプット取得用
-#include "manager.h"
-
-#include "renderer.h"
-
-/* test */
-#include "object_2D.h"
-#include "texture_manager.h"
-#include <bg.h>
-#include <logo.h>
-#include <push.h>
-#include "sound.h"
 //============================================================================
 // コンストラクタ
 //============================================================================
-CTitle::CTitle()
+CLogo::CLogo(int nPriority) : CObject_2D{ nPriority }
 {
-
 }
 
 //============================================================================
 // デストラクタ
 //============================================================================
-CTitle::~CTitle()
+CLogo::~CLogo()
 {
-
 }
 
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CTitle::Init()
+HRESULT CLogo::Init()
 {
-	// 基底クラスの初期設定
-	HRESULT hr{ CScene::Init() };
+	// テクスチャ設定
+	BindTex(CTexture_Manager::TYPE::LOGO);
 
-	// 背景生成
-	CBg::Create();
+	// 2Dオブジェクト初期設定
+	if (FAILED(CObject_2D::Init()))
+	{
+		return E_FAIL;
+	}
 
-	// タイトルロゴ生成
-	CLogo::Create();
-
-	// PUSHUI生成
-	CPush::Create();
-
-	// 全てのサウンドを停止
-	//CSound::GetInstance()->Stop();
-
-	// BGMをかける
-	CSound::GetInstance()->Play(CSound::LABEL::BGM_01);
-
-	return hr;
+	return S_OK;
 }
 
 //============================================================================
 // 終了処理
 //============================================================================
-void CTitle::Uninit()
+void CLogo::Uninit()
 {
-	CSound::GetInstance()->Stop();
-	// 基底クラスの終了処理
-	CScene::Uninit();
+	// 2Dオブジェクト終了処理
+	CObject_2D::Uninit();
 }
 
 //============================================================================
 // 更新処理
 //============================================================================
-void CTitle::Update()
+void CLogo::Update()
 {
-	// 基底クラスの更新処理
-	CScene::Update();
-
-	// チュートリアル画面へ
-	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN)
-		|| CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START))
-	{
-		CSound::GetInstance()->Play(CSound::LABEL::SE_CLICK);
-		CFade::SetFade(CScene::MODE::TUTORIAL);
-		
-	}
+	// 2Dオブジェクト更新処理
+	CObject_2D::Update();
 }
 
 //============================================================================
 // 描画処理
 //============================================================================
-void CTitle::Draw()
+void CLogo::Draw()
 {
-	// 基底クラスの描画処理
-	CScene::Draw();
+	// 2Dオブジェクト描画処理
+	CObject_2D::Draw();
+}
+
+//============================================================================
+// 生成処理
+//============================================================================
+CLogo* CLogo::Create()
+{
+	// メモリを動的確保
+	CLogo* pLogo = new CLogo();
+
+	// パラメータ設定
+	pLogo->SetSize(CREATE_SIZE);// サイズ
+	pLogo->SetPos(CREATE_POS);// 座標
+
+	// 初期化処理
+	pLogo->Init();
+
+	return pLogo;
 }
