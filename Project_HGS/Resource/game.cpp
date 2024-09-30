@@ -24,7 +24,7 @@
 #include <timernumber.h>
 #include "player.h"
 #include <bg.h>
-
+#include "sound.h"
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
@@ -64,11 +64,10 @@ HRESULT CGame::Init()
 		CTimerNumber::Create(nCnt);
 	}
 	
-	// 全てのサウンドを停止
-	//CSound::GetInstance()->Stop();
+	
 
 	// BGMをかける
-	//CSound::GetInstance()->Play(CSound::LABEL::TEST);
+	CSound::GetInstance()->Play(CSound::LABEL::BGM_02);
 
 	return hr;
 }
@@ -78,6 +77,9 @@ HRESULT CGame::Init()
 //============================================================================
 void CGame::Uninit()
 {
+	// 全てのサウンドを停止
+	CSound::GetInstance()->Stop();
+
 	// 邪魔物マネージャーの破棄
 	CObstacle_Manager::GetInstance()->Release();
 
