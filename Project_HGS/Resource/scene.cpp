@@ -127,9 +127,14 @@ CScene* CScene::Create(MODE mode)
 		pScene->m_mode = MODE::GAME;
 		break;
 
-	case CScene::MODE::RESULT:
+	case CScene::MODE::RESULT_GAMECLEAR:
 		pScene = DBG_NEW CResult;
-		pScene->m_mode = MODE::RESULT;
+		pScene->m_mode = MODE::RESULT_GAMECLEAR;
+		break;
+
+	case CScene::MODE::RESULT_GAMEOVER:
+		pScene = DBG_NEW CResult;
+		pScene->m_mode = MODE::RESULT_GAMEOVER;
 		break;
 
 	default:
