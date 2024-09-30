@@ -29,6 +29,9 @@ public:
 		RESULT_GAMEOVER,//リザルト画面（ゲームオーバー）
 		LOGO,// タイトルロゴ
 		PUSH,// プッシュ
+		SPHERE,
+		SQUARE,
+		TRI,
 		MAX,
 	};
 
