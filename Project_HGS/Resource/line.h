@@ -33,16 +33,21 @@ public:
 	void SetLineSegment2D(const Collision::LineSegment2D& inSegment) { m_LineSegment2D = inSegment; }	// 線の設定
 	const Collision::LineSegment2D& GetLineSegment2D() const { return m_LineSegment2D; };				// 線の取得
 
+	void SetIsUnderPlayer(const bool& inIsUnderPlayer) { m_bIsUnderPlayer = inIsUnderPlayer; }
+	const bool& GetIsUnderPlayer() const { return m_bIsUnderPlayer; }
+
 	// 生成
 	static CLine* Create(
 		const D3DXVECTOR3& inPos,		// 位置
 		const D3DXVECTOR3& inSize,		// サイズ
 		const D3DXVECTOR2& inStartPos, 	// 始点
-		const D3DXVECTOR2& inEndPos);	// 終点
+		const D3DXVECTOR2& inEndPos,	// 終点
+		const D3DXCOLOR& inCol);		// 色
 
 private:
 	CLine(const CLine&) = delete;
 	void operator=(const CLine&) = delete;
 
 	Collision::LineSegment2D m_LineSegment2D;	// 線
+	bool m_bIsUnderPlayer;						// 上にプレイヤーが乗っている
 };

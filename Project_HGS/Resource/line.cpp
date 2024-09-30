@@ -16,6 +16,7 @@
 CLine::CLine(int nPriority)
 	: CObject_2D{ nPriority }
 	, m_LineSegment2D{}
+	, m_bIsUnderPlayer{ false }
 {
 	// DO_NOTHING
 }
@@ -70,7 +71,8 @@ CLine* CLine::Create(
 		const D3DXVECTOR3& inPos,		// 位置
 		const D3DXVECTOR3& inSize,		// サイズ
 		const D3DXVECTOR2& inStartPos, 	// 始点
-		const D3DXVECTOR2& inEndPos)	// 終点
+		const D3DXVECTOR2& inEndPos,	// 終点
+		const D3DXCOLOR& inCol)			// 色
 {
 	CLine* pLine = DBG_NEW CLine{};
 
@@ -83,6 +85,7 @@ CLine* CLine::Create(
 	pLine->SetPos(inPos);
 	pLine->SetSize(inSize);
 	pLine->SetLineSegment2D({ inStartPos, inEndPos });
+	pLine->SetCol(inCol);
 
 	return pLine;
 }

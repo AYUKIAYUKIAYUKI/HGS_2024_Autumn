@@ -19,6 +19,7 @@
 #include "texture_manager.h"
 
 #include <timernumber.h>
+#include "player.h"
 
 //============================================================================
 // デフォルトコンストラクタ
@@ -49,6 +50,9 @@ HRESULT CGame::Init()
 	pTest->BindModel(CModel_X_Manager::TYPE::TEST);
 	pTest->SetPos({ 0.0f, 0.0f, 0.0f });
 	pTest->SetRot({ 1.0f, 2.0f, 3.0f });
+
+	// プレイヤーの生成
+	CPlayer* pPlayer{ CPlayer::Create({ SCREEN_WIDTH * 0.5f, CPlayer::MARGIN_HEIGHT, 0.0f }, { 15.0f, 15.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }) };
 
 	// タイマー表示生成
 	for (int nCnt = 0; nCnt < 2; nCnt++)
