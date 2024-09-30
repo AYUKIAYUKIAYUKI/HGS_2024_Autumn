@@ -30,7 +30,7 @@ public:
 	static CBg* Create();// 生成処理
 
 private:
-	static inline const D3DXVECTOR3 CREATE_SIZE = { SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f };// 生成サイズ
+	static inline const D3DXVECTOR3 CREATE_SIZE = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5, 0.0f };// 生成サイズ
 	static inline const D3DXVECTOR3 CREATE_POS = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f };// 生成位置
 };
 

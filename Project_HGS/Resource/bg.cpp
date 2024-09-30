@@ -79,8 +79,8 @@ CBg* CBg::Create()
 	//パラメータ設定
 	pBg->SetSize(CREATE_SIZE);// サイズ
 	pBg->SetPos(CREATE_POS);// 座標
-	pBg->SetTexWidth(5.0f);// 横のテクスチャ分割数
-	pBg->SetTexHeight(5.0f);// 横のテクスチャ分割数
+	//pBg->SetTexWidth(1.0f);// 横のテクスチャ分割数
+	//pBg->SetTexHeight(1.0f);// 横のテクスチャ分割数
 
 	//初期化処理
 	pBg->Init();
