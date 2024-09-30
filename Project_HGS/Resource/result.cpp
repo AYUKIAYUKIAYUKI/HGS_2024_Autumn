@@ -51,7 +51,15 @@ HRESULT CResult::Init()
 
 	//”wŒi¶¬
 	CBg* pBg{ CBg::Create() };
-	pBg->BindTex(CTexture_Manager::TYPE::RESULT_GAMECLEAR);
+	if (CScene::GetMode() == MODE::RESULT_GAMECLEAR)
+	{
+		pBg->BindTex(CTexture_Manager::TYPE::RESULT_GAMECLEAR);
+	}
+	else if (CScene::GetMode() == MODE::RESULT_GAMEOVER)
+	{
+		pBg->BindTex(CTexture_Manager::TYPE::RESULT_GAMEOVER);
+	}
+	
 
 	return hr;
 }
