@@ -50,7 +50,8 @@ HRESULT CResult::Init()
 	//CSound::GetInstance()->Play(CSound::LABEL::TEST);
 
 	//”wŒi¶¬
-	CBg::Create();
+	CBg* pBg{ CBg::Create() };
+	pBg->BindTex(CTexture_Manager::TYPE::RESULT_GAMECLEAR);
 
 	return hr;
 }
