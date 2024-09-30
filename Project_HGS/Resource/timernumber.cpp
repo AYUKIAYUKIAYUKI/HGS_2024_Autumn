@@ -114,5 +114,5 @@ CTimerNumber* CTimerNumber::Create(int nIdx)
 //============================================================================
 void CTimerNumber::SetTimerNumberPos(D3DXVECTOR3 pos)
 {
-	SetPos({ pos.x - m_nIdx * GetSize().x, pos.y, pos.z });
+	SetPos({ pos.x - m_nIdx * (GetSize().x + 25.0f), pos.y, pos.z });
 }
