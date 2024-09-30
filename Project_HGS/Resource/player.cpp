@@ -507,7 +507,9 @@ void CPlayer::Update()
 		if (m_nBuzzCounter >= 10)
 		{
 			m_BuzzMove = { 0.0f, 0.0f, 0.0f };
-			SetPos(m_TargetPos);
+			D3DXVECTOR3 pos = GetPos();
+			pos.y = m_TargetPos.y;
+			SetPos(pos);
 		}
 	}
 	else
