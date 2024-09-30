@@ -19,7 +19,7 @@
 #include "texture_manager.h"
 #include <bg.h>
 #include <timernumber.h>
-
+#include "sound.h"
 //============================================================================
 // コンストラクタ
 //============================================================================
@@ -44,12 +44,6 @@ HRESULT CResult::Init()
 	// 基底クラスの初期設定
 	HRESULT hr{ CScene::Init() };
 
-	// 全てのサウンドを停止
-	//CSound::GetInstance()->Stop();
-
-	// BGMをかける
-	//CSound::GetInstance()->Play(CSound::LABEL::TEST);
-
 	// 背景生成
 	CBg* pBg{ CBg::Create() };
 
@@ -69,6 +63,8 @@ HRESULT CResult::Init()
 		}
 	}
 
+	// BGMをかける
+	CSound::GetInstance()->Play(CSound::LABEL::BGM_03);
 	return hr;
 }
 
@@ -77,6 +73,8 @@ HRESULT CResult::Init()
 //============================================================================
 void CResult::Uninit()
 {
+	// 全てのサウンドを停止
+	CSound::GetInstance()->Stop();
 	// タイマーリセット
 	CManager::GetTimer()->Reset();
 
@@ -96,6 +94,7 @@ void CResult::Update()
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN)
 		|| CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START))
 	{
+		CSound::GetInstance()->Play(CSound::LABEL::SE_CLICK);
 		CFade::SetFade(CScene::MODE::TITLE);
 	}
 }

@@ -67,6 +67,7 @@ protected:
 private:
 
 	void DeleteCheck();		// 消滅判定
+	void Collision();		// 当たり判定
 
 	STYLE m_Style;				// 邪魔物スタイル
 	D3DXVECTOR3 m_PosTarget;	// 目標座標

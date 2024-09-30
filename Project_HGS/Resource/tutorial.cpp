@@ -20,7 +20,7 @@
 #include "texture_manager.h"
 #include <bg.h>
 #include <explanation.h>
-
+#include "sound.h"
 //============================================================================
 // コンストラクタ
 //============================================================================
@@ -51,6 +51,8 @@ HRESULT CTutorial::Init()
 	// 操作説明画面生成
 	CExplanation::Create();
 
+	// BGMをかける
+	CSound::GetInstance()->Play(CSound::LABEL::BGM_01);
 	return hr;
 }
 
@@ -59,6 +61,8 @@ HRESULT CTutorial::Init()
 //============================================================================
 void CTutorial::Uninit()
 {
+	// 全てのサウンドを停止
+	CSound::GetInstance()->Stop();
 	// 基底クラスの終了処理
 	CScene::Uninit();
 }
@@ -75,6 +79,7 @@ void CTutorial::Update()
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN)
 		|| CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START))
 	{
+		CSound::GetInstance()->Play(CSound::LABEL::SE_CLICK);
 		CFade::SetFade(CScene::MODE::GAME);
 	}
 }

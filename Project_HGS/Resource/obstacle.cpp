@@ -9,6 +9,15 @@
 // インクルードファイル
 //****************************************************
 #include "obstacle.h"
+#include "player.h"
+#include "fade.h"
+
+// Add to source as needed.
+#if 1
+using namespace HGSAutumn240930;
+using namespace HGSAutumn240930::Collision;
+using namespace HGSAutumn240930::String;
+#endif
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -64,8 +73,16 @@ void CObstacle::Uninit()
 //============================================================================
 void CObstacle::Update()
 {
+	if (CFade::GetInstance()->GetNextMode() == CScene::MODE::RESULT_GAMEOVER)
+	{
+		return;
+	}
+
 	// 削除チェック
 	DeleteCheck();
+
+	// 当たり判定
+	Collision();
 
 	// 基底クラスの更新処理
 	CObject_2D::Update();
@@ -172,5 +189,30 @@ void CObstacle::DeleteCheck()
 	{
 		// 破棄予約
 		SetRelease();
+	}
+}
+
+//============================================================================
+// 当たり判定
+//============================================================================
+void CObstacle::Collision()
+{
+	// プレイヤータグのオブジェクトを取得
+	CObject* pFind{ CObject::FindObject(CObject::TYPE::PLAYER) };
+
+	if (!pFind)
+	{
+		return;
+	}
+
+	// プレイヤークラスにダウンキャスト
+	CPlayer* pPlayer{ CUtility::DownCast<CPlayer, CObject>(pFind) };
+
+	Collision::Circle circleEnemy = { D3DXVECTOR2(GetPos().x, GetPos().y), GetSize().x };
+	Collision::Circle circlePlayer = { D3DXVECTOR2(pPlayer->GetPos().x, pPlayer->GetPos().y), pPlayer->GetSize().x };
+	
+	if (Collision::IsCollisionCircleVsCircle(circleEnemy, circlePlayer))
+	{ // 衝突している
+		CFade::SetFade(CScene::MODE::RESULT_GAMEOVER);
 	}
 }
