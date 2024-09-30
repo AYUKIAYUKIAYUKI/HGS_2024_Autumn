@@ -7,6 +7,10 @@
 #error "Multi-byte character set is not enabled."
 #endif // !_MBCS
 
+#ifndef NOMINMAX 
+#error "Please define NOMINMAX macro before including windows.h."
+#endif // !NOMINMAX
+
 // Includes
 #include "d3dx9.h"
 #include <string>
