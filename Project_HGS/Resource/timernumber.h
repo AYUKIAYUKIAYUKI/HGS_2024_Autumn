@@ -20,7 +20,7 @@ class CTimerNumber : public CObject_2D
 {
 public:
 
-	CTimerNumber(int nPriority = static_cast<int>(LAYER::UI));// コンストラクタ
+	CTimerNumber(int nPriority = static_cast<int>(LAYER::BACK));// コンストラクタ
 	~CTimerNumber() override;// デストラクタ
 
 	HRESULT Init() override;// 初期設定

@@ -22,6 +22,7 @@ public:
 	{
 		NONE = 0,	// 無し
 		TITLE,		// タイトル
+		TUTORIAL,	// チュートリアル
 		GAME,		// ゲーム
 		RESULT,		// リザルト
 		MAX,

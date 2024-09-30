@@ -44,12 +44,6 @@ HRESULT CTitle::Init()
 	// 基底クラスの初期設定
 	HRESULT hr{ CScene::Init() };
 
-	/* 仮 */
-	CObject_2D* pTest{ CObject_2D::Create() };
-	pTest->BindTex(CTexture_Manager::TYPE::TEST1);
-	pTest->SetPos({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f });
-	pTest->SetSize({ 30.0f, 30.0f, 0.0f });
-
 	//背景生成
 	CBg::Create();
 
@@ -79,10 +73,10 @@ void CTitle::Update()
 	// 基底クラスの更新処理
 	CScene::Update();
 
-	// ゲーム画面へ
+	// チュートリアル画面へ
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
-		CFade::SetFade(CScene::MODE::GAME);
+		CFade::SetFade(CScene::MODE::TUTORIAL);
 	}
 }
 
