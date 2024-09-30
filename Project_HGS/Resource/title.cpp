@@ -18,6 +18,7 @@
 /* test */
 #include "object_2D.h"
 #include "texture_manager.h"
+#include <bg.h>
 
 //============================================================================
 // コンストラクタ
@@ -48,6 +49,9 @@ HRESULT CTitle::Init()
 	pTest->BindTex(CTexture_Manager::TYPE::TEST1);
 	pTest->SetPos({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f });
 	pTest->SetSize({ 30.0f, 30.0f, 0.0f });
+
+	//背景生成
+	CBg::Create();
 
 	// 全てのサウンドを停止
 	//CSound::GetInstance()->Stop();

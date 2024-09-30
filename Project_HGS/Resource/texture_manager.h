@@ -23,6 +23,7 @@ public:
 		TEST0 = 0,	// テスト
 		TEST1,		// テスト
 		TIMER,		// タイマー
+		BG,			// 背景
 		MAX,
 	};
 

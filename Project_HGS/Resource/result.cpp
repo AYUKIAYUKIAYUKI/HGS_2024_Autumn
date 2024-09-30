@@ -17,6 +17,7 @@
 /* test */
 #include "object_3D.h"
 #include "texture_manager.h"
+#include <bg.h>
 
 //============================================================================
 // コンストラクタ
@@ -57,6 +58,9 @@ HRESULT CResult::Init()
 
 	// BGMをかける
 	//CSound::GetInstance()->Play(CSound::LABEL::TEST);
+
+	//背景生成
+	CBg::Create();
 
 	return hr;
 }

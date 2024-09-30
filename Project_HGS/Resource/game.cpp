@@ -20,6 +20,7 @@
 
 #include <timernumber.h>
 #include "player.h"
+#include <bg.h>
 
 //============================================================================
 // デフォルトコンストラクタ
@@ -51,6 +52,9 @@ HRESULT CGame::Init()
 	pTest->SetPos({ 0.0f, 0.0f, 0.0f });
 	pTest->SetRot({ 1.0f, 2.0f, 3.0f });
 
+	//背景生成
+	CBg::Create();
+
 	// プレイヤーの生成
 	CPlayer* pPlayer{ CPlayer::Create({ SCREEN_WIDTH * 0.5f, CPlayer::MARGIN_HEIGHT, 0.0f }, { 15.0f, 15.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }) };
 
@@ -72,6 +76,9 @@ HRESULT CGame::Init()
 //============================================================================
 void CGame::Uninit()
 {
+	// タイマーリセット
+	CManager::GetTimer()->Reset();
+
 	// 基底クラスの終了処理
 	CScene::Uninit();
 }

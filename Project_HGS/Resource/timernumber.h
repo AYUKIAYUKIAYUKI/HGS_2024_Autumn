@@ -37,6 +37,8 @@ private:
 	static inline const D3DXVECTOR3 CREATE_SIZE = { 60.0f, 60.0f, 0.0f };// 生成サイズ
 	static inline const D3DXVECTOR3 CREATE_POS = { SCREEN_WIDTH * 0.5f + CREATE_SIZE.x * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f };// 生成位置
 
+	const int START_COL_CHANGE = 30;// カラーが変わり始める残り時間
+
 	int m_nIdx;// ID
 };
 
