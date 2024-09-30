@@ -19,8 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Resource\bg.cpp" />
     <ClCompile Include="resource\camera.cpp" />
     <ClCompile Include="Resource\character.cpp" />
+    <ClCompile Include="Resource\explanation.cpp" />
     <ClCompile Include="Resource\fade.cpp" />
     <ClCompile Include="Resource\game.cpp" />
     <ClCompile Include="resource\input.cpp" />
@@ -47,11 +49,15 @@
     <ClCompile Include="Resource\timer.cpp" />
     <ClCompile Include="Resource\timernumber.cpp" />
     <ClCompile Include="Resource\title.cpp" />
+    <ClCompile Include="Resource\trajectory.cpp" />
+    <ClCompile Include="Resource\tutorial.cpp" />
     <ClCompile Include="Resource\utility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Resource\bg.h" />
     <ClInclude Include="resource\camera.h" />
     <ClInclude Include="Resource\character.h" />
+    <ClInclude Include="Resource\explanation.h" />
     <ClInclude Include="Resource\fade.h" />
     <ClInclude Include="Resource\game.h" />
     <ClInclude Include="resource\input.h" />
@@ -75,6 +81,8 @@
     <ClInclude Include="Resource\timer.h" />
     <ClInclude Include="Resource\timernumber.h" />
     <ClInclude Include="Resource\title.h" />
+    <ClInclude Include="Resource\trajectory.h" />
+    <ClInclude Include="Resource\tutorial.h" />
     <ClInclude Include="Resource\utility.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

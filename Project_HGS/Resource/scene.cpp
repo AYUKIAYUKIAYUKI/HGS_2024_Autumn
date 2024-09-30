@@ -21,6 +21,7 @@
 #include "game.h"
 #include "result.h"
 #include "title.h"
+#include "tutorial.h"
 
 // オブジェクト管理用
 #include "object.h"
@@ -116,14 +117,24 @@ CScene* CScene::Create(MODE mode)
 		pScene->m_mode = MODE::TITLE;
 		break;
 
+	case CScene::MODE::TUTORIAL:
+		pScene = DBG_NEW CTutorial;
+		pScene->m_mode = MODE::TUTORIAL;
+		break;
+
 	case CScene::MODE::GAME:
 		pScene = DBG_NEW CGame;
 		pScene->m_mode = MODE::GAME;
 		break;
 
-	case CScene::MODE::RESULT:
+	case CScene::MODE::RESULT_GAMECLEAR:
 		pScene = DBG_NEW CResult;
-		pScene->m_mode = MODE::RESULT;
+		pScene->m_mode = MODE::RESULT_GAMECLEAR;
+		break;
+
+	case CScene::MODE::RESULT_GAMEOVER:
+		pScene = DBG_NEW CResult;
+		pScene->m_mode = MODE::RESULT_GAMEOVER;
 		break;
 
 	default:

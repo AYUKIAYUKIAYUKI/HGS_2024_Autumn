@@ -22,8 +22,10 @@ public:
 	{
 		NONE = 0,	// 無し
 		TITLE,		// タイトル
+		TUTORIAL,	// チュートリアル
 		GAME,		// ゲーム
-		RESULT,		// リザルト
+		RESULT_GAMECLEAR,		// リザルト
+		RESULT_GAMEOVER,		// リザルト
 		MAX,
 	};
 

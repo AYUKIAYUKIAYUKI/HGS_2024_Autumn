@@ -25,6 +25,7 @@ public:
 	HRESULT Init();	// 初期設定
 	void Uninit();	// 終了処理
 	void Update();	// 更新処理
+	void Reset();	// リセット
 
 	int GetTime() { return m_nTimer; }	//タイマーの取得
 	int GetDigit() { return m_nDigit; }	//タイマーの桁数

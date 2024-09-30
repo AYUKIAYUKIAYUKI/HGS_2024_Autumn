@@ -76,6 +76,20 @@ void CTimerNumber::Update()
 	// 現在のテクスチャ横分割幅設定
 	SetNowPatternU(nPosTex);
 
+	//残り時間に合わせて赤色にしていく
+	if (nTimer <= START_COL_CHANGE)
+	{
+		// 現在のカラー情報を取得
+		D3DXCOLOR col = GetCol();
+
+		//緑と青色を薄くしていく
+		col.g = static_cast<float>(nTimer) / static_cast<float>(START_COL_CHANGE);
+		col.b = static_cast<float>(nTimer) / static_cast<float>(START_COL_CHANGE);
+
+		// カラー情報を設定
+		SetCol(col);
+	}
+
 	// 2Dオブジェクト更新処理
 	CObject_2D::Update();
 }

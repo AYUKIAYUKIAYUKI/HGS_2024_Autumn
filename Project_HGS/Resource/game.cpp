@@ -20,6 +20,7 @@
 
 #include <timernumber.h>
 #include "player.h"
+#include <bg.h>
 
 //============================================================================
 // デフォルトコンストラクタ
@@ -45,11 +46,8 @@ HRESULT CGame::Init()
 	// 基底クラスの初期設定
 	HRESULT hr{ CScene::Init() };
 
-	/* 仮 */
-	CObject_X* pTest{ CObject_X::Create() };
-	pTest->BindModel(CModel_X_Manager::TYPE::TEST);
-	pTest->SetPos({ 0.0f, 0.0f, 0.0f });
-	pTest->SetRot({ 1.0f, 2.0f, 3.0f });
+	//背景生成
+	CBg::Create();
 
 	// プレイヤーの生成
 	CPlayer* pPlayer{ CPlayer::Create({ SCREEN_WIDTH * 0.5f, CPlayer::MARGIN_HEIGHT, 0.0f }, { 15.0f, 15.0f, 0.0f }, { 0.0f, 0.0f, 0.0f, 1.0f }) };
@@ -72,6 +70,9 @@ HRESULT CGame::Init()
 //============================================================================
 void CGame::Uninit()
 {
+	// タイマーリセット
+	CManager::GetTimer()->Reset();
+
 	// 基底クラスの終了処理
 	CScene::Uninit();
 }
@@ -88,7 +89,7 @@ void CGame::Update()
 	// リザルト画面へ
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
-		CFade::SetFade(CScene::MODE::RESULT);
+		CFade::SetFade(CScene::MODE::RESULT_GAMECLEAR);
 	}
 #endif // _DEBUG
 
@@ -96,7 +97,7 @@ void CGame::Update()
 	if (CManager::GetTimer()->GetTime() <= 0)
 	{
 		//リザルト画面へ
-		CFade::SetFade(CScene::MODE::RESULT);
+		CFade::SetFade(CScene::MODE::RESULT_GAMECLEAR);
 	}
 }
 

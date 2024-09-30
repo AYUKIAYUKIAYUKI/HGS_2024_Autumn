@@ -20,9 +20,13 @@ public:
 	//****************************************************
 	enum class TYPE
 	{
-		TEST0 = 0,	// テスト
-		TEST1,		// テスト
-		TIMER,		// タイマー
+		TEST0 = 0,		// テスト
+		TEST1,			// テスト
+		TIMER,			// タイマー
+		BG,				// 背景
+		EXPLANATION,	// 操作説明
+		RESULT_GAMECLEAR,//リザルト画面（ゲームクリア）
+		RESULT_GAMEOVER,//リザルト画面（ゲームオーバー）
 		MAX,
 	};
 
