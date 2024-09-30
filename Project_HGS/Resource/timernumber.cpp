@@ -31,6 +31,12 @@ CTimerNumber::~CTimerNumber()
 //============================================================================
 HRESULT CTimerNumber::Init()
 {
+	// テクスチャ設定
+	BindTex(CTexture_Manager::TYPE::TIMER);
+
+	// パラメータ設定
+	SetTexWidth(0.1f);// 横のテクスチャ分割数 
+
 	// 2Dオブジェクト初期設定
 	if (FAILED(CObject_2D::Init()))
 	{
@@ -58,14 +64,17 @@ void CTimerNumber::Update()
 	int nTimer = CManager::GetTimer()->GetTime();// 現在のタイマー
 	int nMulti = 1;// 各桁の倍数
 
-	//IDに合わせて倍数を求める
-	for (int nCntTime = 0; nCntTime < m_nIdx; nCntTime++)
+	// IDに合わせて倍数を求める
+	for (int nCntTime = 0; nCntTime < m_nIdx + 1; nCntTime++)
 	{
 		nMulti *= 10;
 	}
 
-	//該当する桁の数字を求める
+	// 該当する桁の数字を求める
 	int nPosTex = (nTimer % nMulti) / (nMulti / 10);
+
+	// 現在のテクスチャ横分割幅設定
+	SetNowPatternU(nPosTex);
 
 	// 2Dオブジェクト更新処理
 	CObject_2D::Update();
@@ -105,5 +114,5 @@ CTimerNumber* CTimerNumber::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nIdx)
 //============================================================================
 void CTimerNumber::SetTimerNumberPos(D3DXVECTOR3 pos)
 {
-	SetPos({ pos.x + m_nIdx * (GetSize().x * 0.5f), pos.y, pos.z });
+	SetPos({ pos.x - m_nIdx * GetSize().x, pos.y, pos.z });
 }

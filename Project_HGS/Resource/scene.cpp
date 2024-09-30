@@ -66,6 +66,13 @@ void CScene::Uninit()
 //============================================================================
 void CScene::Update()
 {
+	//ゲーム中のみ
+	if (GetMode() == MODE::GAME)
+	{
+		//タイマーの更新処理
+		CManager::GetTimer()->Update();
+	}
+
 	// フェードの更新
 	CFade::GetInstance()->Update();
 

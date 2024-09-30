@@ -35,6 +35,7 @@ CManager::CManager()
 	m_pLight = nullptr;
 	m_pKeyboard = nullptr;
 	m_pPad = nullptr;
+	m_pTimer = nullptr;
 	m_pScene = nullptr;
 }
 
@@ -110,8 +111,19 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 		return E_FAIL;
 	}
 
-	// キーボードの初期化
+	// パッドの初期化
 	m_pPad->Init();
+
+	// タイマーの生成
+	m_pTimer = DBG_NEW CTimer;
+
+	if (m_pTimer == nullptr)
+	{ // 生成失敗
+		return E_FAIL;
+	}
+
+	// タイマーの初期化
+	m_pTimer->Init();
 
 	// 最初のシーン設定
 	SetScene(CScene::MODE::TITLE);
@@ -149,6 +161,14 @@ void CManager::Uninit()
 		m_pKeyboard->Uninit();	// 終了処理
 		delete m_pKeyboard;		// メモリを解放
 		m_pKeyboard = nullptr;	// ポインタを初期化
+	}
+
+	// タイマーの破棄
+	if (m_pTimer != nullptr)
+	{
+		m_pTimer->Uninit();	// 終了処理	
+		delete m_pTimer;	// メモリを解放
+		m_pTimer = nullptr;	// ポインタを初期化
 	}
 
 	// ライトの破棄

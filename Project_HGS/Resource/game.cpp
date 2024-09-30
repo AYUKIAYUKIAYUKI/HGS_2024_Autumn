@@ -18,6 +18,8 @@
 #include "object_X.h"
 #include "texture_manager.h"
 
+#include <timernumber.h>
+
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
@@ -48,6 +50,12 @@ HRESULT CGame::Init()
 	pTest->SetPos({ 0.0f, 0.0f, 0.0f });
 	pTest->SetRot({ 1.0f, 2.0f, 3.0f });
 
+	// タイマー表示生成
+	for (int nCnt = 0; nCnt < 2; nCnt++)
+	{
+		CTimerNumber::Create({ 800.0f, 60.0f, 0.0f }, { 60.0f, 60.0f, 0.0f }, nCnt);
+	}
+
 	// 全てのサウンドを停止
 	//CSound::GetInstance()->Stop();
 
@@ -74,9 +82,18 @@ void CGame::Update()
 	// 基底クラスの更新処理
 	CScene::Update();
 
+#ifdef _DEBUG
 	// リザルト画面へ
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
+		CFade::SetFade(CScene::MODE::RESULT);
+	}
+#endif // _DEBUG
+
+	// タイマーが0になったら
+	if (CManager::GetTimer()->GetTime() <= 0)
+	{
+		//リザルト画面へ
 		CFade::SetFade(CScene::MODE::RESULT);
 	}
 }
