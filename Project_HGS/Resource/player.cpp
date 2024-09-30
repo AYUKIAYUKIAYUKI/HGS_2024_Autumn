@@ -102,8 +102,11 @@ void CPlayer::Update()
 
 	// “–‚½‚è”»’è
 	{
+		using namespace HGSAutumn240930;
 
-
+		Collision::Circle a;
+		Collision::Circle b;
+		Collision::IsCollisionCircleVsCircle(a, b);
 
 		D3DXVECTOR3 pos = GetPos();
 	}
