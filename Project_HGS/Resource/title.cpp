@@ -19,6 +19,8 @@
 #include "object_2D.h"
 #include "texture_manager.h"
 #include <bg.h>
+#include <logo.h>
+#include <push.h>
 
 //============================================================================
 // コンストラクタ
@@ -44,8 +46,14 @@ HRESULT CTitle::Init()
 	// 基底クラスの初期設定
 	HRESULT hr{ CScene::Init() };
 
-	//背景生成
+	// 背景生成
 	CBg::Create();
+
+	// タイトルロゴ生成
+	CLogo::Create();
+
+	// PUSHUI生成
+	CPush::Create();
 
 	// 全てのサウンドを停止
 	//CSound::GetInstance()->Stop();
@@ -74,7 +82,8 @@ void CTitle::Update()
 	CScene::Update();
 
 	// チュートリアル画面へ
-	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
+	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN)
+		|| CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START))
 	{
 		CFade::SetFade(CScene::MODE::TUTORIAL);
 	}
