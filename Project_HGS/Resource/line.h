@@ -11,6 +11,11 @@
 //****************************************************
 #include "object_2D.h"
 
+//---------------------------------------------------
+// using 宣言
+//---------------------------------------------------
+using namespace HGSAutumn240930;
+
 //****************************************************
 // プレイヤーが移動できる線のクラス
 //****************************************************
@@ -25,15 +30,19 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	void SetMove(const D3DXVECTOR3& inMove);	// 移動量設定
-	const D3DXVECTOR3& GetMove() const;			// 移動量取得
+	void SetLineSegment2D(const Collision::LineSegment2D& inSegment) { m_LineSegment2D = inSegment; }	// 線の設定
+	const Collision::LineSegment2D& GetLineSegment2D() const { return m_LineSegment2D; };				// 線の取得
 
-	static CLine* Create();	// 生成
+	// 生成
+	static CLine* Create(
+		const D3DXVECTOR3& inPos,		// 位置
+		const D3DXVECTOR3& inSize,		// サイズ
+		const D3DXVECTOR2& inStartPos, 	// 始点
+		const D3DXVECTOR2& inEndPos);	// 終点
 
 private:
 	CLine(const CLine&) = delete;
 	void operator=(const CLine&) = delete;
 
-	D3DXVECTOR3 m_StartPos;	// 始点
-	D3DXVECTOR3 m_EndPos;	// 終点
+	Collision::LineSegment2D m_LineSegment2D;	// 線
 };

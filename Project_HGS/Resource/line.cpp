@@ -15,6 +15,7 @@
 //============================================================================
 CLine::CLine(int nPriority)
 	: CObject_2D{ nPriority }
+	, m_LineSegment2D{}
 {
 	// DO_NOTHING
 }
@@ -65,7 +66,11 @@ void CLine::Draw()
 //============================================================================
 // 生成
 //============================================================================
-CLine* CLine::Create()
+CLine* CLine::Create(
+		const D3DXVECTOR3& inPos,		// 位置
+		const D3DXVECTOR3& inSize,		// サイズ
+		const D3DXVECTOR2& inStartPos, 	// 始点
+		const D3DXVECTOR2& inEndPos)	// 終点
 {
 	CLine* pLine = DBG_NEW CLine{};
 
@@ -74,6 +79,10 @@ CLine* CLine::Create()
 	{
 		pLine->Init();
 	}
+
+	pLine->SetPos(inPos);
+	pLine->SetSize(inSize);
+	pLine->SetLineSegment2D({ inStartPos, inEndPos });
 
 	return pLine;
 }

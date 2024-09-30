@@ -10,6 +10,7 @@
 // インクルードファイル
 //****************************************************
 #include "character.h"
+#include "line.h"
 
 //****************************************************
 // プレイヤークラス
@@ -28,7 +29,7 @@ public:
 	void SetPrevPos(const D3DXVECTOR3& inPos) { m_PrevPos = inPos; }
 	const D3DXVECTOR3& GetPrevPos() const { return m_PrevPos; }
 
-	static CPlayer* Create();	// 生成
+	static CPlayer* Create(const D3DXVECTOR3& inPos, const D3DXVECTOR3& inSize);	// 生成
 
 private:
 	enum class PLAYER_FLAG : BYTE
@@ -42,4 +43,6 @@ private:
 
 	D3DXVECTOR3 m_PrevPos;	// 前フレームの位置
 	BYTE m_PlayerFlag;		// プレイヤーフラグ
+
+	std::vector<CLine**> m_Lines;	// 線たち
 };

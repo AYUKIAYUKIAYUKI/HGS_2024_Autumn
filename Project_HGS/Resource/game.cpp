@@ -48,6 +48,8 @@ HRESULT CGame::Init()
 	pTest->SetPos({ 0.0f, 0.0f, 0.0f });
 	pTest->SetRot({ 1.0f, 2.0f, 3.0f });
 
+	
+
 	// 全てのサウンドを停止
 	//CSound::GetInstance()->Stop();
 
