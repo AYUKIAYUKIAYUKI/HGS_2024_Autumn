@@ -298,7 +298,7 @@ void CPlayer::Update()
 		CTrajectory::Create(GetPos(), GetSize());
 	}
 
-#if 0
+#if 1
 	// 親クラスの処理
 	CCharacter::Update();
 #endif
@@ -475,36 +475,36 @@ void CPlayer::Update()
 		}
 	}
 
-	if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT))
-	{
-		if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN))
-		{
-			if (fabsf(m_BuzzPoint.y - GetPos().y) >= 20.0f / m_nBuzzCounter)
-			{
-				m_BuzzPoint = GetPos();
-				m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN);
-				m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP);
-				m_nBuzzCounter++;
+	//if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::CAN_INPUT))
+	//{
+	//	if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN))
+	//	{
+	//		if (fabsf(m_BuzzPoint.y - GetPos().y) >= 20.0f / m_nBuzzCounter)
+	//		{
+	//			m_BuzzPoint = GetPos();
+	//			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN);
+	//			m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP);
+	//			m_nBuzzCounter++;
 
-				m_BuzzMove.y = -10.0f / 20 / m_nBuzzCounter;
-			}
-		}
-		else if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP))
-		{
-			if (fabsf(m_BuzzPoint.y - GetPos().y) >= 20.0f / m_nBuzzCounter)
-			{
-				m_BuzzPoint = GetPos();
-				m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP);
-				m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN);
-				m_nBuzzCounter++;
+	//			m_BuzzMove.y = -10.0f / 20 / m_nBuzzCounter;
+	//		}
+	//	}
+	//	else if (m_PlayerFlag & static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP))
+	//	{
+	//		if (fabsf(m_BuzzPoint.y - GetPos().y) >= 20.0f / m_nBuzzCounter)
+	//		{
+	//			m_BuzzPoint = GetPos();
+	//			m_PlayerFlag &= ~static_cast<BYTE>(PLAYER_FLAG::BUZZ_UP);
+	//			m_PlayerFlag |= static_cast<BYTE>(PLAYER_FLAG::BUZZ_DOWN);
+	//			m_nBuzzCounter++;
 
-				m_BuzzMove.y = 10.0f / 20 / m_nBuzzCounter;
-			}
-		}
-	}
+	//			m_BuzzMove.y = 10.0f / 20 / m_nBuzzCounter;
+	//		}
+	//	}
+	//}
 
-	// 親クラスの処理
-	CCharacter::Update();
+	//// 親クラスの処理
+	//CCharacter::Update();
 }
 
 //============================================================================
