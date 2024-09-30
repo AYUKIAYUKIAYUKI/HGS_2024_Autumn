@@ -98,8 +98,8 @@ HRESULT CPlayer::Init()
 		CLine* pLine = CLine::Create(
 			{ SCREEN_WIDTH * 0.5f, MARGIN_HEIGHT, 0.0f },
 			{ LINE_WIDTH, LINE_HEIGHT, 0.0f },
-			{ fWidth, MARGIN_HEIGHT },
-			{ fWidth, SCREEN_HEIGHT - MARGIN_HEIGHT },
+			{ fWidth, 0 },
+			{ fWidth, SCREEN_HEIGHT },
 			{ 0.0f, 0.0f, 0.0f, 1.0f });
 		CLine** ppLine = DBG_NEW CLine* { pLine };
 		m_Lines.push_back(ppLine);
@@ -109,8 +109,8 @@ HRESULT CPlayer::Init()
 		CLine* pLine = CLine::Create(
 			{ 0.0f, 0.0f, 0.0f },
 			{ 0.0f, 0.0f, 0.0f },
-			{ fWidth, MARGIN_HEIGHT },
-			{ fWidth, SCREEN_HEIGHT - MARGIN_HEIGHT },
+			{ fWidth, 0 },
+			{ fWidth, SCREEN_HEIGHT },
 			{ 0.0f, 0.0f, 0.0f, 1.0f });
 		CLine** ppLine = DBG_NEW CLine* { pLine };
 		m_Lines.push_back(ppLine);
@@ -296,6 +296,21 @@ void CPlayer::Update()
 	if (bIsMove)
 	{
 		CTrajectory::Create(GetPos(), GetSize());
+	}
+
+
+	{
+		D3DXVECTOR3 pos = GetPos();
+		if (pos.x >= SCREEN_WIDTH - 300.0f)
+		{
+			pos.x = SCREEN_WIDTH - 300.0f;
+		}
+		else if (pos.x <= 300.0f)
+		{
+			pos.x = 300.0f;
+		}
+
+		SetPos(pos);
 	}
 
 #if 1
