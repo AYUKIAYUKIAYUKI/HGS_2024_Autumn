@@ -51,7 +51,15 @@ HRESULT CResult::Init()
 
 	//”wŒi¶¬
 	CBg* pBg{ CBg::Create() };
-	pBg->BindTex(CTexture_Manager::TYPE::RESULT_GAMECLEAR);
+	if (CScene::GetMode() == MODE::RESULT_GAMECLEAR)
+	{
+		pBg->BindTex(CTexture_Manager::TYPE::RESULT_GAMECLEAR);
+	}
+	else if (CScene::GetMode() == MODE::RESULT_GAMEOVER)
+	{
+		pBg->BindTex(CTexture_Manager::TYPE::RESULT_GAMEOVER);
+	}
+	
 
 	return hr;
 }
@@ -74,7 +82,8 @@ void CResult::Update()
 	CScene::Update();
 
 	// ƒ^ƒCƒgƒ‹‰æ–Ê‚Ö
-	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
+	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN)
+		|| CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START))
 	{
 		CFade::SetFade(CScene::MODE::TITLE);
 	}
