@@ -474,6 +474,7 @@ CPlayer* CPlayer::Create(const D3DXVECTOR3& inPos, const D3DXVECTOR3& inSize, co
 	pPlayer->SetPos(inPos);
 	pPlayer->SetSize(inSize);
 	pPlayer->SetCol(inCol);
+	pPlayer->SetType(TYPE::PLAYER);
 
 	return pPlayer;
 }
