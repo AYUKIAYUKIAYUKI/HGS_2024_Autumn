@@ -28,6 +28,7 @@
     <ClCompile Include="resource\input.cpp" />
     <ClCompile Include="resource\light.cpp" />
     <ClCompile Include="Resource\line.cpp" />
+    <ClCompile Include="Resource\logo.cpp" />
     <ClCompile Include="resource\main.cpp" />
     <ClCompile Include="resource\manager.cpp" />
     <ClCompile Include="Resource\model_X_manager.cpp" />
@@ -36,11 +37,20 @@
     <ClCompile Include="resource\object_3D.cpp" />
     <ClCompile Include="Resource\object_billboard.cpp" />
     <ClCompile Include="resource\object_X.cpp" />
+    <ClCompile Include="Resource\obstacle.cpp" />
+    <ClCompile Include="Resource\obstacle_long.cpp" />
+    <ClCompile Include="Resource\obstacle_manager.cpp" />
+    <ClCompile Include="Resource\obstacle_normal.cpp" />
+    <ClCompile Include="Resource\obstacle_speedy.cpp" />
+    <ClCompile Include="Resource\obstacle_turn.cpp" />
+    <ClCompile Include="Resource\obstacle_twist.cpp" />
+    <ClCompile Include="Resource\obstacle_wave.cpp" />
     <ClCompile Include="resource\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Resource\player.cpp" />
+    <ClCompile Include="Resource\push.cpp" />
     <ClCompile Include="resource\renderer.cpp" />
     <ClCompile Include="Resource\result.cpp" />
     <ClCompile Include="Resource\scene.cpp" />
@@ -63,6 +73,7 @@
     <ClInclude Include="resource\input.h" />
     <ClInclude Include="resource\light.h" />
     <ClInclude Include="Resource\line.h" />
+    <ClInclude Include="Resource\logo.h" />
     <ClInclude Include="resource\main.h" />
     <ClInclude Include="resource\manager.h" />
     <ClInclude Include="Resource\model_X_manager.h" />
@@ -71,8 +82,17 @@
     <ClInclude Include="resource\object_3D.h" />
     <ClInclude Include="Resource\object_billboard.h" />
     <ClInclude Include="resource\object_X.h" />
+    <ClInclude Include="Resource\obstacle.h" />
+    <ClInclude Include="Resource\obstacle_long.h" />
+    <ClInclude Include="Resource\obstacle_manager.h" />
+    <ClInclude Include="Resource\obstacle_normal.h" />
+    <ClInclude Include="Resource\obstacle_speedy.h" />
+    <ClInclude Include="Resource\obstacle_turn.h" />
+    <ClInclude Include="Resource\obstacle_twist.h" />
+    <ClInclude Include="Resource\obstacle_wave.h" />
     <ClInclude Include="resource\pch.h" />
     <ClInclude Include="Resource\player.h" />
+    <ClInclude Include="Resource\push.h" />
     <ClInclude Include="resource\renderer.h" />
     <ClInclude Include="Resource\result.h" />
     <ClInclude Include="Resource\scene.h" />

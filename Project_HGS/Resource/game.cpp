@@ -14,6 +14,9 @@
 // インプット取得用
 #include "manager.h"
 
+// 邪魔物生成用
+#include "obstacle_manager.h"
+
 /* test */
 #include "object_X.h"
 #include "texture_manager.h"
@@ -46,6 +49,9 @@ HRESULT CGame::Init()
 	// 基底クラスの初期設定
 	HRESULT hr{ CScene::Init() };
 
+	// 邪魔物マネージャーの生成
+	CObstacle_Manager::GetInstance()->Init();
+
 	//背景生成
 	CBg::Create();
 
@@ -56,7 +62,9 @@ HRESULT CGame::Init()
 	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
 		CTimerNumber::Create(nCnt);
-	}	// 全てのサウンドを停止
+	}	
+	
+	// 全てのサウンドを停止
 	//CSound::GetInstance()->Stop();
 
 	// BGMをかける
@@ -70,6 +78,9 @@ HRESULT CGame::Init()
 //============================================================================
 void CGame::Uninit()
 {
+	// 邪魔物マネージャーの破棄
+	CObstacle_Manager::GetInstance()->Release();
+
 	// タイマーリセット
 	CManager::GetTimer()->Reset();
 
@@ -82,6 +93,9 @@ void CGame::Uninit()
 //============================================================================
 void CGame::Update()
 {
+	// 邪魔物マネージャーの更新
+	CObstacle_Manager::GetInstance()->Update();
+
 	// 基底クラスの更新処理
 	CScene::Update();
 
