@@ -89,7 +89,7 @@ void CGame::Update()
 	// リザルト画面へ
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
-		CFade::SetFade(CScene::MODE::RESULT);
+		CFade::SetFade(CScene::MODE::RESULT_GAMECLEAR);
 	}
 #endif // _DEBUG
 
@@ -97,7 +97,7 @@ void CGame::Update()
 	if (CManager::GetTimer()->GetTime() <= 0)
 	{
 		//リザルト画面へ
-		CFade::SetFade(CScene::MODE::RESULT);
+		CFade::SetFade(CScene::MODE::RESULT_GAMECLEAR);
 	}
 }
 
