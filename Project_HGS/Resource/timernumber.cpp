@@ -92,15 +92,15 @@ void CTimerNumber::Draw()
 //============================================================================
 // 生成処理
 //============================================================================
-CTimerNumber* CTimerNumber::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nIdx)
+CTimerNumber* CTimerNumber::Create(int nIdx)
 {
 	// メモリを動的確保
 	CTimerNumber* pTimeNumber = new CTimerNumber();
 
 	//パラメータ設定
 	pTimeNumber->SetIdx(nIdx);// ID
-	pTimeNumber->SetSize(size);// サイズ
-	pTimeNumber->SetTimerNumberPos(pos);// 座標
+	pTimeNumber->SetSize(CREATE_SIZE);// サイズ
+	pTimeNumber->SetTimerNumberPos(CREATE_POS);// 座標
 	pTimeNumber->SetTexWidth(10.0f);// 横のテクスチャ分割数
 
 	//初期化処理

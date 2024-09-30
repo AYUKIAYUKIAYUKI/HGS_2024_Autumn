@@ -27,12 +27,15 @@ public:
 	void Uninit() override;// 終了処理
 	void Update() override;// 更新処理
 	void Draw() override;// 描画処理
-	static CTimerNumber* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nIdx);// 生成処理
+	static CTimerNumber* Create(int nIdx);// 生成処理
 
 private:
 
 	void SetTimerNumberPos(D3DXVECTOR3 pos);// 座標設定
 	void SetIdx(int nIdx) { m_nIdx = nIdx; }// ID設定
+
+	static inline const D3DXVECTOR3 CREATE_SIZE = { 60.0f, 60.0f, 0.0f };// 生成サイズ
+	static inline const D3DXVECTOR3 CREATE_POS = { SCREEN_WIDTH * 0.5f + CREATE_SIZE.x * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f };// 生成位置
 
 	int m_nIdx;// ID
 };

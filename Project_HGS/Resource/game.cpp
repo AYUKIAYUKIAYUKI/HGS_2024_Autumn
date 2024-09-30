@@ -53,7 +53,7 @@ HRESULT CGame::Init()
 	// タイマー表示生成
 	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
-		CTimerNumber::Create({ 800.0f, 60.0f, 0.0f }, { 60.0f, 60.0f, 0.0f }, nCnt);
+		CTimerNumber::Create(nCnt);
 	}
 
 	// 全てのサウンドを停止
